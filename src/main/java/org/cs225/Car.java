@@ -13,7 +13,7 @@ public class Car {
     private String sprite;
 
     public Car(List<Stop> stops, List<Leg> legs, String sprite){
-        //these conditionals make sure that the lists aren't empty
+        //these two following conditionals make sure that the lists aren't empty
         if (stops == null || stops.size() == 0){
             throw new IllegalArgumentException("Pathway must have at least one stop.");
         }
@@ -38,6 +38,71 @@ public class Car {
         this.currentLegIndex = 0;
     }
 
+public void move() {
+    //this makes sure that the car doesn't move if it has already completed all the Legs.
+    if (currentLegIndex >= legPathway.size()) {
+        return;
+    }
+
+    //this gets the current leg the car is on
+    Leg currentLeg = legPathway.get(currentLegIndex);
+
+    //determines the speed based on the Leg
+    if (speed == 0) {
+        double min = currentLeg.getMinSpeed();
+        double max = currentLeg.getMaxSpeed();
+        speed = min + (Math.random() * (max - min));
+
+        if (speed > topSpeed) {
+            topSpeed = speed;
+        }
+    }
+
+    //gets the next stop (target)
+    Stop next = currentLeg.getEnd();
+
+    //this gets the direction of where the car needs to go in
+    double dx = next.getxPos() - xPos;
+    double dy = next.getyPos() - yPos;
+
+    //this calculates the distance to the target stop
+    double length = Math.sqrt(dx * dx + dy * dy);
+
+    //if the car is already at stop, move to the next leg
+    if (length == 0) {
+        currentLegIndex++;
+        currentStopIndex++;
+        speed = 0;
+        return;
+    }
+
+    //this makes sure that the car doesn't just teleport to the next stop 
+    dx /= length;
+    dy /= length;
+
+    //this makes sure the car moves toward the stop based on the speed
+    xPos += dx * speed;
+    yPos += dy * speed;
+
+    //this updates the distance traveled
+    distance += speed;
+
+    //this checks if we have reached or passed the stop
+    double remaining = Math.sqrt(Math.pow(next.getxPos() - xPos, 2) + Math.pow(next.getyPos() - yPos, 2));
+
+    if (remaining < speed) {
+        //this will get it to stop
+        xPos = next.getxPos();
+        yPos = next.getyPos();
+
+        //onto the next stop and leg
+        currentLegIndex++;
+        currentStopIndex++;
+
+        //this resets speed for next leg
+        speed = 0;
+    }
+}
 
     public void setSpeed(double carSpeed){
         this.speed = carSpeed;
