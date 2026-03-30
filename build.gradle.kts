@@ -23,5 +23,5 @@ javafx {
 }
 
 application {
-    mainClass.set("org.cs225.Test")
+    mainClass.set("org.cs225.TristanPart.Test")
 }

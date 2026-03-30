@@ -1,4 +1,13 @@
-package org.cs225.Tristan;
+package org.cs225;
+
+/*
+    Tristan worked on this class.
+
+    This class contains information for each stop. Its xPos, yPos and its name.
+    It also has an isVisible boolean option for other uses.
+ */
+
+import java.util.Objects;
 
 public class Stop {
     private double xPos;
@@ -62,5 +71,21 @@ public class Stop {
         sbuild.append("}");
 
         return sbuild.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        if (!(obj instanceof Stop other)) return false;
+
+        return this.xPos == other.xPos &&
+                this.yPos == other.yPos &&
+                Objects.equals(this.name, other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xPos, yPos, name, isVisible);
     }
 }

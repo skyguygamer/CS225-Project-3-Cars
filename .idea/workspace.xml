@@ -5,12 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb131ef2-a30b-40b4-9ed8-f1f84c4a9357" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Leg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Stop.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Track.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Route.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Track.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/TrackTester.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Leg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Leg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Stop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Stop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Track.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +31,12 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Project-3-Car" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -53,7 +62,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/skyguygamer/CS225-Project-3-Cars.git&quot;,
-    &quot;accountId&quot;: &quot;2ecea066-93fd-46c4-b35b-fd7d11aedb84&quot;
+    &quot;accountId&quot;: &quot;5612b876-6d03-4686-988a-9b5364777855&quot;
   }
 }</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\trist\.gradle\wrapper\dists\gradle-8.8-bin\dl7vupf4psengwqhwktix4v1\gradle-8.8" javaHome="C:\Java\java21" gradleVersion="8.8" />
@@ -68,14 +77,18 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.Project-3-Car [:org.cs225.Test.main()].executor": "Run",
+    "Gradle.Project-3-Car [:org.cs225.TestTristan.main()].executor": "Run",
+    "Gradle.Project-3-Car [:org.cs225.TrackTester.main()].executor": "Run",
+    "Gradle.Project-3-Car [:org.cs225.TristanPart.Test.main()].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "tristan",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/trist/OneDrive/School/AAA CS225 Current/Project3/Project-3-Car",
-    "project.structure.last.edited": "SDKs",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
