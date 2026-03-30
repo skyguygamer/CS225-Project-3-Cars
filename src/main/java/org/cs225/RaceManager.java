@@ -1,83 +1,71 @@
 import java.util.*;
-
 public class RaceManager {
-    private List<Car> cars;
-    private double startTime;
+    private ArrayList<Car> cars;
+    private RaceClock clock;
     private String userPrediction;
     private Car winner;
     private boolean running;
-    private RaceClock clock;
 
-    //constructor
     public RaceManager() {
-        this.cars = new ArrayList<>();
-        this.clock = new RaceClock();
-        this.running = false;
+        cars = new ArrayList<>();
+        clock = new RaceClock();
+        running = false;
     }
 
     //this sets up the race
-    public void setupRace(int numCars, List<Stop> stops) {
-        //this just checks to make sure there is no empty stops
-        if (stops == null || stops.size() < numCars) {
-            throw new IllegalArgumentException("Not enough stops.");
-        }
+    public void setupRace(Track track, int numCars) {
 
-        //this sets up the paths and the legs for each car
-        for (int i = 0; i < numCars; i++) {
-            ArrayList<Stop> path = new ArrayList<>();
-            ArrayList<Leg> legs = new ArrayList<>();
+        //creates the whole track
+        track.generateStops();
+        track.generateLegs();
 
-            //gives a unique start position to each car
-            for (int j = 0; j < stops.size(); j++) {
-                path.add(stops.get((i + j) % stops.size()));
+        //picks a finishing stop
+        Stop finishStop = track.getStops().get(0);
+
+        //this gets the fair starting positions
+        ArrayList<Stop> startingStops =
+        track.getFairStartingStops(finishStop, numCars);
+
+        //builds the routes to each car
+        for (int i = 0; i < startingStops.size(); i++) {
+            Stop start = startingStops.get(i);
+            Route route = track.buildRoute(start, finishStop);
+            if (route == null){
+                continue;
             }
 
-            //this sets up the Legs
-            for (int k = 0; k < path.size() - 1; k++) {
-                legs.add(new Leg(path.get(k), path.get(k + 1)));
-            }
-
-            Car car = new Car(path,legs, "Car " + i, "car" + i + ".png");
+            Car car = new Car(route.getStops(), route.getLegs(), "Car" + (i + 1), "car" + (i + 1) + ".png");
             cars.add(car);
         }
     }
 
-    //this starts the race
+    //starts the race
     public void startRace() {
         running = true;
         clock.reset();
         clock.start();
-
-        startTime = System.currentTimeMillis();
         gameLoop();
     }
 
-    //this gets the cars to move through the loop
+    //race loop
     public void gameLoop() {
-
         while (running) {
-
             boolean allFinished = true;
-
             clock.tick();
-            for (Car car : cars) {
 
+            for (Car car : cars) {
                 if (!car.isFinished()) {
                     car.move();
                     allFinished = false;
                 } else {
-                    // set finish time ONCE
                     if (car.getFinishTime() == 0) {
                         car.setFinishTime(clock.getTime());
                     }
                 }
             }
-
             if (allFinished) {
-                endRace();
+                stopRace();
             }
-            
-            //this makes the loop sleep for 16 milliseconds, which means about 60 fps
             try {
                 Thread.sleep(16);
             } catch (InterruptedException e) {
@@ -87,29 +75,17 @@ public class RaceManager {
     }
 
     //ends the race
-    public void endRace() {
+    public void stopRace() {
         running = false;
         clock.pause();
         determineWinner();
     }
 
-    //pauses the race
-    public void pauseRace() {
-        clock.pause();
-        running = false;
-    }
+    //winner of the race
+    public void determineWinner() {
 
-    //resumes the race
-    public void resumeRace(){
-        running = true;
-        clock.resume();
-        gameLoop();
-    }
-
-    //figures out who won
-    public Car determineWinner() {
-        Car fastest = null;
         double bestTime = Double.MAX_VALUE;
+        Car fastest = null;
 
         for (Car car : cars) {
             if (car.getFinishTime() < bestTime) {
@@ -118,7 +94,6 @@ public class RaceManager {
             }
         }
         winner = fastest;
-        return winner;
     }
 
     //gets the user prediction
@@ -127,27 +102,25 @@ public class RaceManager {
     }
 
     //checks the user prediction
-    public boolean checkUserPrediction() {
+    public boolean checkPrediction() {
         if (winner == null) return false;
         return winner.getCarName().equals(userPrediction);
     }
 
-    //this shows the results
-    public String showResults() {
+    //results of the race
+    public String getResults() {
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("Winner: ").append(winner.getCarName()).append("\n\n");
+
         for (Car car : cars) {
             sb.append(car.getCarName())
-              .append(" | Time: ").append(car.getFinishTime())
-              .append(" | Distance: ").append(car.getDistance())
-              .append("\n");
+                    .append(" | Time: ").append(car.getFinishTime())
+                    .append(" | Distance: ").append(car.getDistance())
+                    .append("\n");
         }
 
         return sb.toString();
-    }
-
-    public List<Car> getCars() {
-        return cars;
     }
 }
