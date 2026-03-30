@@ -1,10 +1,12 @@
 package org.cs225;
 import java.util.ArrayList;
 
+import org.cs225.GUI.RaceView;
 import org.cs225.Track.Route;
 import org.cs225.Track.Stop;
 import org.cs225.Track.Track;
 public class RaceManager {
+    private RaceView raceView;
     private ArrayList<Car> cars;
     private RaceClock clock;
     private String userPrediction;
@@ -50,36 +52,33 @@ public class RaceManager {
         running = true;
         clock.reset();
         clock.start();
-        gameLoop();
     }
 
     //race loop
-    public void gameLoop() {
-        while (running) {
-            boolean allFinished = true;
-            clock.tick();
+    public void update() {
+        if (!running) return;
 
-            for (Car car : cars) {
-                if (!car.isFinished()) {
-                    car.move();
-                    allFinished = false;
-                } else {
-                    if (car.getFinishTime() == 0) {
-                        car.setFinishTime(clock.getTime());
-                    }
-                }
-            }
-            if (allFinished) {
-                stopRace();
-            }
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        clock.tick();
+        boolean allFinished = true;
+
+       for (int i = 0; i < cars.size(); i++) {
+        Car car = cars.get(i);
+    
+        if (!car.isFinished()) {
+            car.move();
+            raceView.updateCarPosition(i, car.getXPos(), car.getYPos());
+            allFinished = false;        
+        } else {
+            if (car.getFinishTime() == 0) {
+            car.setFinishTime(clock.getTime());
         }
     }
+}
 
+        if (allFinished) {
+            stopRace();
+    }
+    }
     //ends the race
     public void stopRace() {
         running = false;
@@ -128,5 +127,8 @@ public class RaceManager {
         }
 
         return sb.toString();
+    }
+    public ArrayList<Car> getCars() {
+        return cars;
     }
 }

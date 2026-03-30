@@ -1,13 +1,19 @@
 package org.cs225;
 
 import java.util.List;
-import javafx.application.Application;
-import javafx.geometry.Point2D;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import java.util.concurrent.TimeUnit;
+
 import org.cs225.GUI.IntroView;
 import org.cs225.GUI.RaceView;
 import org.cs225.GUI.ResultsView;
+import org.cs225.Track.Track;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.geometry.Point2D;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 public class RaceGameApp extends Application {
 
@@ -31,7 +37,17 @@ public class RaceGameApp extends Application {
     private Scene raceScene;
     private Scene resultsScene;
 
+    private RaceManager gameRace;    
+
+    //Race loop variables and objects
+    AnimationTimer animator;
     private int predictedCarIndex = -1;
+
+    private final long TICKSPERSECOND = 1;
+    private final long TICKLENGTH = TimeUnit.SECONDS.toNanos(1L) / TICKSPERSECOND;
+    private long startTime = System.nanoTime();
+    Label label;
+    Integer counter = 0;
 
     @Override
     public void start(Stage stage) {
@@ -41,6 +57,21 @@ public class RaceGameApp extends Application {
         primaryStage.setTitle("Project 3 - Racing Simulator");
         changeScene(INTRO_SCENE);
         primaryStage.show();
+
+        animator = new AnimationTimer() 
+        {
+            @Override
+            public void handle(long arg0)
+            {
+                long currentTime = System.nanoTime();
+                if( TICKLENGTH <= currentTime - startTime)
+                {
+                    update();
+                    render();
+                    startTime = currentTime;
+                }
+            }
+        };
     }
 
     private void buildScenes() {
@@ -68,10 +99,16 @@ public class RaceGameApp extends Application {
     public void startRace(int selectedCarIndex) {
         predictedCarIndex = selectedCarIndex;
 
+        gameRace = new RaceManager();
+        gameRace.setupRace(new Track((int)Math.round(WINDOW_WIDTH), (int)Math.round(WINDOW_HEIGHT), 8), 4);
+
         raceView.resetForNewRace();
         raceView.setPredictedCarName(CAR_NAMES[selectedCarIndex]);
         raceView.setRaceStatus("Placeholder race in progress for " + CAR_NAMES[selectedCarIndex] + ".");
 
+        startTime = System.nanoTime();
+        
+        animator.start();
         // TODO: Tell RaceController / RaceManager to begin the real race here.
         // TODO: As teammate simulation data arrives, update RaceView through methods like
         // updateCarPosition(...) and showPredictedRoute(...).
@@ -155,4 +192,29 @@ public class RaceGameApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+        //When this is called, call the RaceManager update method. This should update the position of all objects in the race
+    //Currently this is just updating a counter to show functionality
+    public void update()
+    {
+       if (gameRace != null) {
+        gameRace.update(); //
+    }
+    counter++;
+    }
+
+    //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
+    //Currently this is just showing an updating counter to show functionality
+   public void render() {
+    if (gameRace != null && gameRace.getCars() != null) {
+        List<Car> carList = gameRace.getCars();
+        for (int i = 0; i < carList.size(); i++) {
+            Car car = carList.get(i);
+            raceView.updateCarPosition(i, car.getXPos(), car.getYPos());
+        }
+    }
+    if (label != null) {
+        label.setText(counter.toString());
+    }
+}
 }
