@@ -1,4 +1,4 @@
-package org.cs225;
+package org.cs225.GUI;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.cs225.RaceGameApp;
 
 public class IntroView {
 

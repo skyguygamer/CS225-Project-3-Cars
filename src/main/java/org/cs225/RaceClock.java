@@ -1,3 +1,5 @@
+package org.cs225;
+
 public class RaceClock{
     private double time;
     private boolean running;

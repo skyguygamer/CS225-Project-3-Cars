@@ -5,6 +5,9 @@ import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.cs225.GUI.IntroView;
+import org.cs225.GUI.RaceView;
+import org.cs225.GUI.ResultsView;
 
 public class RaceGameApp extends Application {
 

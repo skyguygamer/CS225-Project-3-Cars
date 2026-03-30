@@ -23,5 +23,5 @@ javafx {
 }
 
 application {
-    mainClass.set("org.cs225.SceneController")
+    mainClass.set("org.cs225.RaceGameApp")
 }

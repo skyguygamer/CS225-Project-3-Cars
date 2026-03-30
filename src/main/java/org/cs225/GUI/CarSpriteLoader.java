@@ -1,4 +1,4 @@
-package org.cs225;
+package org.cs225.GUI;
 
 import java.io.IOException;
 import java.io.InputStream;

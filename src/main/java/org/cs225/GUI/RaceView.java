@@ -1,4 +1,4 @@
-package org.cs225;
+package org.cs225.GUI;
 
 import java.util.List;
 import javafx.geometry.Insets;
@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
+import org.cs225.RaceGameApp;
 
 public class RaceView {
 

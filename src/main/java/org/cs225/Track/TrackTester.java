@@ -1,4 +1,4 @@
-package org.cs225;
+package org.cs225.Track;
 
 /*
     This class tests Track, Leg, Stop, and Route and shows what the track should look like.
@@ -25,7 +25,7 @@ public class TrackTester {
 
     public static void main(String[] args) {
         //Makign track
-        Track track = new Track(800, 600, 15, 100);
+        Track track = new Track(800, 600, 15);
 
         //For making the same race over and over u can add a seed as a 4th parameter
         Track track1 = new Track(800, 600, 10, 100);

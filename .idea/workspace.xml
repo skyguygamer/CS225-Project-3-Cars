@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb131ef2-a30b-40b4-9ed8-f1f84c4a9357" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Route.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Track.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/cs225/TrackTester.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Leg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Leg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Stop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Stop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Tristan/Track.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Car.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Car.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/RaceClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/RaceClock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/RaceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/RaceManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,12 +65,14 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="3AuAEubCoKltQIdYP8X5L3UoRUV" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.Project-3-Car [:org.cs225.SceneController.main()].executor": "Run",
     "Gradle.Project-3-Car [:org.cs225.Test.main()].executor": "Run",
     "Gradle.Project-3-Car [:org.cs225.TestTristan.main()].executor": "Run",
     "Gradle.Project-3-Car [:org.cs225.TrackTester.main()].executor": "Run",
@@ -84,11 +81,11 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "tristan",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/trist/OneDrive/School/AAA CS225 Current/Project3/Project-3-Car",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
@@ -103,6 +100,19 @@
       <option name="presentableId" value="Default" />
       <updated>1773431980305</updated>
     </task>
+    <task id="LOCAL-00001" summary="fk this">
+      <option name="closed" value="true" />
+      <created>1774904979610</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774904979610</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fk this" />
+    <option name="LAST_COMMIT_MESSAGE" value="fk this" />
   </component>
 </project>
