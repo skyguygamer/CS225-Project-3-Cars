@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb131ef2-a30b-40b4-9ed8-f1f84c4a9357" name="Changes" comment="">
+    <list default="true" id="fb131ef2-a30b-40b4-9ed8-f1f84c4a9357" name="Changes" comment="fk this">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/Car.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/Car.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/RaceClock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/RaceClock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/cs225/RaceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/cs225/RaceManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,27 +67,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Project-3-Car [:org.cs225.SceneController.main()].executor": "Run",
-    "Gradle.Project-3-Car [:org.cs225.Test.main()].executor": "Run",
-    "Gradle.Project-3-Car [:org.cs225.TestTristan.main()].executor": "Run",
-    "Gradle.Project-3-Car [:org.cs225.TrackTester.main()].executor": "Run",
-    "Gradle.Project-3-Car [:org.cs225.TristanPart.Test.main()].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/trist/OneDrive/School/AAA CS225 Current/Project3/Project-3-Car",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Project-3-Car [:org.cs225.SceneController.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Project-3-Car [:org.cs225.Test.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Project-3-Car [:org.cs225.TestTristan.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Project-3-Car [:org.cs225.Track.TrackTester.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Project-3-Car [:org.cs225.TrackTester.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Project-3-Car [:org.cs225.TristanPart.Test.main()].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/trist/OneDrive/School/AAA CS225 Current/Project3/Project-3-Car&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
