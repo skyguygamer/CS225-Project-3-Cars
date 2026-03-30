@@ -10,7 +10,8 @@ import javafx.stage.Stage;
 
 public class SceneController extends Application {
 
-    private final long tickLength = TimeUnit.SECONDS.toNanos(1L) / 1;
+    private final long TICKSPERSECOND = 1;
+    private final long TICKLENGTH = TimeUnit.SECONDS.toNanos(1L) / TICKSPERSECOND;
     private long startTime = System.nanoTime();
     Label label;
     Integer counter = 0;
@@ -37,7 +38,7 @@ public class SceneController extends Application {
             public void handle(long arg0)
             {
                 long currentTime = System.nanoTime();
-                if( tickLength <= currentTime - startTime)
+                if( TICKLENGTH <= currentTime - startTime)
                 {
                     update();
                     render();
