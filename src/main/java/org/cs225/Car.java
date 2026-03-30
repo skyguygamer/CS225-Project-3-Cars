@@ -1,5 +1,6 @@
 import java.util.*;
 public class Car {
+    private String carName;
     private List<Stop> pathway;
     private List<Leg> legPathway;
     private int currentStopIndex;
@@ -12,7 +13,7 @@ public class Car {
     private double finishTime;
     private String sprite;
 
-    public Car(List<Stop> stops, List<Leg> legs, String sprite){
+    public Car(List<Stop> stops, List<Leg> legs, String carName, String sprite){
         //these two following conditionals make sure that the lists aren't empty
         if (stops == null || stops.size() == 0){
             throw new IllegalArgumentException("Pathway must have at least one stop.");
@@ -25,6 +26,7 @@ public class Car {
         this.pathway = stops;
         this.legPathway = legs;
         this.sprite = sprite;
+        this.carName = carName;
 
         //sets the starting point at first stop
         this.xPos = pathway.get(0).getxPos();
@@ -91,7 +93,7 @@ public void move() {
     double remaining = Math.sqrt(Math.pow(next.getxPos() - xPos, 2) + Math.pow(next.getyPos() - yPos, 2));
 
     if (remaining < speed) {
-        //this will get it to stop
+        //this will get it to the stop
         xPos = next.getxPos();
         yPos = next.getyPos();
 
@@ -104,6 +106,7 @@ public void move() {
     }
 }
 
+    //setters
     public void setSpeed(double carSpeed){
         this.speed = carSpeed;
 
@@ -112,8 +115,18 @@ public void move() {
         }
     }
 
+    public void setCarName(String new_name){
+        this.carName = new_name;
+    }
+
+
     public void setFinishTime(double time) {
         this.finishTime = time;
+    }
+
+    //getters
+    public String getCarName(){
+        return this.carName;
     }
 
     public double getXPos() {
