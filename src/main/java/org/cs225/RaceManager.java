@@ -1,6 +1,8 @@
 package org.cs225;
 
 import java.util.*;
+import org.cs225.Track.*;
+
 public class RaceManager {
     private ArrayList<Car> cars;
     private RaceClock clock;
