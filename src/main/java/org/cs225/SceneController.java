@@ -12,10 +12,12 @@ public class SceneController extends Application {
 
     private final long tickLength = TimeUnit.SECONDS.toNanos(1L) / 1;
     private long startTime = System.nanoTime();
+    Label label;
+    Integer counter = 0;
 
     @Override
     public void start(Stage stage) {
-        Label label = new Label("JavaFX is working!");
+        label = new Label("JavaFX is working!");
 
 
         StackPane root = new StackPane();
@@ -55,14 +57,18 @@ public class SceneController extends Application {
 
 
     //When this is called, call the RaceManager update method. This should update the position of all objects in the race
+    //Currently this is just updating a counter to show functionality
     public void update()
     {
+        counter++;
         return;
     }
 
     //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
+    //Currently this is just showing an updating counter to show functionality
     public void render()
     {
+        label.setText(counter.toString());
         return;
     }
 }
