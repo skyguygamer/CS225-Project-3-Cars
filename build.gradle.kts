@@ -13,7 +13,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -23,5 +23,5 @@ javafx {
 }
 
 application {
-    mainClass.set("org.cs225.Test")
+    mainClass.set("org.cs225.SceneController")
 }
