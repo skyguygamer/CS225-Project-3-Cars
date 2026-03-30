@@ -13,15 +13,15 @@ repositories {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 javafx {
     version = "21"
-    modules = listOf("javafx.controls", "javafx.fxml")
+    modules = listOf("javafx.controls")
 }
 
 application {
-    mainClass.set("org.cs225.Test")
+    mainClass.set("org.cs225.RaceGameApp")
 }

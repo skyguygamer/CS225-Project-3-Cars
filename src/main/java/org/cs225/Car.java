@@ -1,3 +1,8 @@
+package org.cs225;
+
+import org.cs225.Track.Leg;
+import org.cs225.Track.Stop;
+
 import java.util.*;
 public class Car {
     private String carName;

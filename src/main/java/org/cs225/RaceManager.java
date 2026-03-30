@@ -1,4 +1,9 @@
-import java.util.*;
+package org.cs225;
+import java.util.ArrayList;
+
+import org.cs225.Track.Route;
+import org.cs225.Track.Stop;
+import org.cs225.Track.Track;
 public class RaceManager {
     private ArrayList<Car> cars;
     private RaceClock clock;
@@ -25,6 +30,7 @@ public class RaceManager {
         //this gets the fair starting positions
         ArrayList<Stop> startingStops =
         track.getFairStartingStops(finishStop, numCars);
+                track.getFairStartingStops(finishStop, numCars);
 
         //builds the routes to each car
         for (int i = 0; i < startingStops.size(); i++) {
