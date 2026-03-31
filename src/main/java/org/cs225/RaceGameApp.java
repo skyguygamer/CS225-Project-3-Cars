@@ -206,13 +206,6 @@ public class RaceGameApp extends Application {
     //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
     //Currently this is just showing an updating counter to show functionality
    public void render() {
-    if (gameRace != null && gameRace.getCars() != null) {
-        List<Car> carList = gameRace.getCars();
-        for (int i = 0; i < carList.size(); i++) {
-            Car car = carList.get(i);
-            raceView.updateCarPosition(i, car.getXPos(), car.getYPos());
-        }
-    }
     if (label != null) {
         label.setText(counter.toString());
     }
