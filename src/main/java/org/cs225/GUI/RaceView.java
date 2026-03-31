@@ -33,7 +33,7 @@ import org.cs225.Track.Stop;
 public class RaceView {
 
     private static final boolean DEBUG_TRACK_GEOMETRY = false; // switch to true to enable helpful debugging tools
-    private static final boolean DEBUG_RACE_HUD = true;
+    private static final boolean DEBUG_RACE_HUD = false;
 
     private static final Point2D[] PLACEHOLDER_TRACK_POINTS = {
             // Main checkpoint A
@@ -176,7 +176,7 @@ public class RaceView {
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
-        Button finishRaceButton = new Button("Finish Placeholder Race");
+        Button finishRaceButton = new Button("Finish Race");
         finishRaceButton.setOnAction(event -> {
             app.showResults();
         });

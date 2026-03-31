@@ -1,3 +1,11 @@
+/**
+ * @author Gabriel
+ * @author Matthew
+ * 
+ * Controls the various scenes of the program as well as runs the loop that handles the game logic
+ * 
+ */
+
 package org.cs225;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,12 +18,6 @@ import javafx.stage.Stage;
 import org.cs225.GUI.*;
 import org.cs225.Track.*;
 
-/**
- * Starts the JavaFX application, builds the scenes, and coordinates the main
- * update and render loop for the race.
- *
- * @author Gabriel Ferreira
- */
 public class RaceGameApp extends Application {
 
     public static final int INTRO_SCENE = 0;
@@ -47,11 +49,11 @@ public class RaceGameApp extends Application {
     private static final int TRACK_PANEL_HEIGHT = 500;
     private static final int TRACK_STOP_COUNT = 8;
     private static final int CAR_COUNT = 4;
-    private static final double SECONDS_PER_SIMULATION_TICK = 0.016;
     private static final String[] CAR_NAMES = {"Car 1", "Car 2", "Car 3", "Car 4"};
 
     private Stage primaryStage;
 
+    // TODO: Feed these views with real controller/model data once teammate integration is ready.
     private IntroView introView;
     private RaceView raceView;
     private ResultsView resultsView;
@@ -151,7 +153,7 @@ public class RaceGameApp extends Application {
         if (gameRace.isRunning()) {
             animator.start();
         } else {
-            raceView.setRaceStatus("Race could not start. Verify track data and starting positions.");
+            raceView.setRaceStatus("Race could not start.");
         }
 
         changeScene(RACE_SCENE);
@@ -196,6 +198,7 @@ public class RaceGameApp extends Application {
         raceView.resetForNewRace();
         resultsView.showPlaceholderResults();
 
+        // TODO: Reset shared controller/model state here once the final controller owns race setup.
         changeScene(INTRO_SCENE);
     }
 
@@ -236,6 +239,7 @@ public class RaceGameApp extends Application {
         }
 
         if (predictedCarIndex >= 0) {
+            // TODO: Replace this placeholder overlay with the teammate-provided route once route data is exposed.
             raceView.showPredictedRoute(createPlaceholderRouteForCar(predictedCarIndex));
         }
     }
@@ -246,6 +250,8 @@ public class RaceGameApp extends Application {
         resultsView.setResultRow(2, 0, "3rd", CAR_NAMES[0], "01:22.03", "87 mph", "110 mph");
         resultsView.setResultRow(3, 2, "4th", CAR_NAMES[2], "01:24.91", "84 mph", "107 mph");
 
+        // TODO: When the real route data exists, consider showing the predicted route on RaceView
+        // before switching to the results scene.
         if (predictedCarIndex >= 0) {
             raceView.showPredictedRoute(createPlaceholderRouteForCar(predictedCarIndex));
         }
@@ -330,19 +336,13 @@ public class RaceGameApp extends Application {
             return "-";
         }
 
-        // Car distance is accumulated once per simulation tick, so convert the
-        // recorded finish time back into a tick count before averaging. This
-        // keeps the end-of-race average speed in the same unit as Car speed/top speed.
-        double completedTickCount = car.getFinishTime() / SECONDS_PER_SIMULATION_TICK;
-        if (completedTickCount <= 0) {
-            return "-";
-        }
-
-        double averageSpeed = car.getDistance() / completedTickCount;
+        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
+        double averageSpeed = car.getDistance() / car.getFinishTime();
         return String.format("%.2f", averageSpeed);
     }
 
     private String formatTopSpeed(Car car) {
+        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
         return String.format("%.2f", car.getTopSpeed());
     }
 
