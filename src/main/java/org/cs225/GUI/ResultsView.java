@@ -1,5 +1,11 @@
 package org.cs225.GUI;
 
+/*
+    Gabriel worked on this class
+
+    This class is 
+ */
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

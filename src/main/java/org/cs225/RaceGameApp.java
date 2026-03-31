@@ -1,16 +1,24 @@
 package org.cs225;
 
+/*
+    Gabriel worked on this class
+
+    This class is 
+ */
+
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import org.cs225.GUI.*;
-import org.cs225.Track.*;
+import org.cs225.GUI.IntroView;
+import org.cs225.GUI.RaceView;
+import org.cs225.GUI.ResultsView;
+import org.cs225.Track.Track;
 
 public class RaceGameApp extends Application {
 
@@ -20,8 +28,11 @@ public class RaceGameApp extends Application {
 
     private static final double WINDOW_WIDTH = 1000;
     private static final double WINDOW_HEIGHT = 700;
+    private static final int TRACK_PANEL_WIDTH = 960;
+    private static final int TRACK_PANEL_HEIGHT = 500;
+    private static final int TRACK_STOP_COUNT = 8;
+    private static final int CAR_COUNT = 4;
     private static final String[] CAR_NAMES = {"Car 1", "Car 2", "Car 3", "Car 4"};
-    private static final int PLACEHOLDER_WINNER_INDEX = 1;
 
     private Stage primaryStage;
 
@@ -34,41 +45,19 @@ public class RaceGameApp extends Application {
     private Scene raceScene;
     private Scene resultsScene;
 
-    private RaceManager gameRace;    
-
-    //Race loop variables and objects
-    AnimationTimer animator;
+    private RaceManager gameRace;
+    private AnimationTimer animator;
     private int predictedCarIndex = -1;
-
-    private final long TICKSPERSECOND = 1;
-    private final long TICKLENGTH = TimeUnit.SECONDS.toNanos(1L) / TICKSPERSECOND;
-    private long startTime = System.nanoTime();
-    Label label;
-    Integer counter = 0;
 
     @Override
     public void start(Stage stage) {
         primaryStage = stage;
         buildScenes();
+        animator = createAnimator();
 
         primaryStage.setTitle("Project 3 - Racing Simulator");
         changeScene(INTRO_SCENE);
         primaryStage.show();
-
-        animator = new AnimationTimer() 
-        {
-            @Override
-            public void handle(long arg0)
-            {
-                long currentTime = System.nanoTime();
-                if( TICKLENGTH <= currentTime - startTime)
-                {
-                    update();
-                    render();
-                    startTime = currentTime;
-                }
-            }
-        };
     }
 
     private void buildScenes() {
@@ -93,52 +82,124 @@ public class RaceGameApp extends Application {
         }
     }
 
+    private AnimationTimer createAnimator() {
+        return new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update();
+                render();
+
+                if (gameRace != null && gameRace.isRaceFinished()) {
+                    raceView.setRaceStatus("Race finished.");
+                    showResults();
+                }
+            }
+        };
+    }
+
     public void startRace(int selectedCarIndex) {
         predictedCarIndex = selectedCarIndex;
 
         gameRace = new RaceManager();
-        gameRace.setupRace(new Track((int)Math.round(WINDOW_WIDTH), (int)Math.round(WINDOW_HEIGHT), 8), 4);
+        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_STOP_COUNT), CAR_COUNT);
+
+        if (selectedCarIndex >= 0 && selectedCarIndex < gameRace.getCars().size()) {
+            gameRace.setUserPrediction(gameRace.getCars().get(selectedCarIndex).getCarName());
+        }
+
+        gameRace.startRace();
 
         raceView.resetForNewRace();
+        raceView.setRaceManager(gameRace);
         raceView.setPredictedCarName(CAR_NAMES[selectedCarIndex]);
-        raceView.setRaceStatus("Placeholder race in progress for " + CAR_NAMES[selectedCarIndex] + ".");
+        raceView.setRaceStatus("Race in progress for " + CAR_NAMES[selectedCarIndex] + ".");
+        raceView.renderFromRaceManager();
+        resultsView.clearResults();
 
-        startTime = System.nanoTime();
-        
-        animator.start();
-        // TODO: Tell RaceController / RaceManager to begin the real race here.
-        // TODO: As teammate simulation data arrives, update RaceView through methods like
-        // updateCarPosition(...) and showPredictedRoute(...).
+        if (gameRace.isRunning()) {
+            animator.start();
+        } else {
+            raceView.setRaceStatus("Race could not start. TODO: verify teammate Track data and starting positions.");
+        }
+
         changeScene(RACE_SCENE);
     }
 
     public void showResults() {
-        boolean predictionWasCorrect = predictedCarIndex == PLACEHOLDER_WINNER_INDEX;
-
-        if (predictedCarIndex >= 0) {
-            resultsView.setPredictionSummary(
-                    CAR_NAMES[predictedCarIndex],
-                    CAR_NAMES[PLACEHOLDER_WINNER_INDEX],
-                    predictionWasCorrect
-            );
-        } else {
-            resultsView.setPredictionSummaryText("No prediction was selected before the race.");
+        if (animator != null) {
+            animator.stop();
         }
 
-        loadPlaceholderResults();
+        if (gameRace != null && gameRace.getWinner() != null) {
+            loadResultsFromRace();
+        } else {
+            if (predictedCarIndex >= 0) {
+                resultsView.setPredictionSummaryText(
+                        "Race ended before official results were available. TODO: replace this fallback with controller-driven results."
+                );
+            } else {
+                resultsView.setPredictionSummaryText("No prediction was selected before the race.");
+            }
 
-        // TODO: Replace placeholder winner/stat data with real race results from the controller.
+            loadPlaceholderResults();
+        }
         changeScene(RESULTS_SCENE);
     }
 
     public void restartRace() {
+        if (animator != null) {
+            animator.stop();
+        }
+
         predictedCarIndex = -1;
+        gameRace = null;
         introView.clearSelection();
+        raceView.setRaceManager(null);
         raceView.resetForNewRace();
         resultsView.showPlaceholderResults();
 
-        // TODO: Reset the simulation through RaceController / RaceManager here.
+        // TODO: Reset shared controller/model state here once the final controller owns race setup.
         changeScene(INTRO_SCENE);
+    }
+
+    private void loadResultsFromRace() {
+        Car winner = gameRace.getWinner();
+
+        if (predictedCarIndex >= 0 && predictedCarIndex < CAR_NAMES.length) {
+            resultsView.setPredictionSummary(
+                    CAR_NAMES[predictedCarIndex],
+                    formatCarDisplayName(winner.getCarName()),
+                    gameRace.checkPrediction()
+            );
+        } else {
+            resultsView.setPredictionSummaryText(
+                    "No prediction was selected before the race. Winner: " + formatCarDisplayName(winner.getCarName())
+            );
+        }
+
+        List<Car> carsInOriginalOrder = new ArrayList<>(gameRace.getCars());
+        List<Car> rankedCars = new ArrayList<>(carsInOriginalOrder);
+        rankedCars.sort(Comparator.comparingDouble(Car::getFinishTime));
+
+        for (int row = 0; row < rankedCars.size() && row < CAR_NAMES.length; row++) {
+            Car car = rankedCars.get(row);
+            int carIndex = carsInOriginalOrder.indexOf(car);
+
+            resultsView.setResultRow(
+                    row,
+                    Math.max(carIndex, 0),
+                    formatPlace(row + 1),
+                    formatCarDisplayName(car.getCarName()),
+                    formatRaceTime(car.getFinishTime()),
+                    formatAverageSpeed(car),
+                    formatTopSpeed(car)
+            );
+        }
+
+        if (predictedCarIndex >= 0) {
+            // TODO: Replace this placeholder overlay with the teammate-provided route once route data is exposed.
+            raceView.showPredictedRoute(createPlaceholderRouteForCar(predictedCarIndex));
+        }
     }
 
     private void loadPlaceholderResults() {
@@ -190,19 +251,55 @@ public class RaceGameApp extends Application {
         launch(args);
     }
 
-        //When this is called, call the RaceManager update method. This should update the position of all objects in the race
-    //Currently this is just updating a counter to show functionality
-    public void update()
-    {
-        counter++;
-        return;
+    // Advances the simulation by one step from the JavaFX AnimationTimer.
+    public void update() {
+        if (gameRace == null) {
+            return;
+        }
+
+        gameRace.updateTick();
     }
 
-    //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
-    //Currently this is just showing an updating counter to show functionality
-    public void render()
-    {
-        label.setText(counter.toString());
-        return;
+    // Re-renders the race scene from the latest RaceManager state.
+    public void render() {
+        raceView.renderFromRaceManager();
+    }
+
+    private String formatPlace(int placeNumber) {
+        return switch (placeNumber) {
+            case 1 -> "1st";
+            case 2 -> "2nd";
+            case 3 -> "3rd";
+            default -> placeNumber + "th";
+        };
+    }
+
+    private String formatRaceTime(double totalSeconds) {
+        int minutes = (int) (totalSeconds / 60);
+        double seconds = totalSeconds - (minutes * 60);
+        return String.format("%02d:%05.2f", minutes, seconds);
+    }
+
+    private String formatAverageSpeed(Car car) {
+        if (car.getFinishTime() <= 0) {
+            return "-";
+        }
+
+        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
+        double averageSpeed = car.getDistance() / car.getFinishTime();
+        return String.format("%.2f", averageSpeed);
+    }
+
+    private String formatTopSpeed(Car car) {
+        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
+        return String.format("%.2f", car.getTopSpeed());
+    }
+
+    private String formatCarDisplayName(String carName) {
+        if (carName != null && carName.matches("Car\\d+")) {
+            return "Car " + carName.substring(3);
+        }
+
+        return carName;
     }
 }

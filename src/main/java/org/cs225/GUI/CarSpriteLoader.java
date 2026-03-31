@@ -1,5 +1,11 @@
 package org.cs225.GUI;
 
+/*
+    Gabriel worked on this class
+
+    This class is 
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;

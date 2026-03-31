@@ -1,5 +1,11 @@
 package org.cs225.GUI;
 
+/*
+    Gabriel worked on this class
+
+    This class is 
+ */
+
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -19,7 +25,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
+import org.cs225.Car;
 import org.cs225.RaceGameApp;
+import org.cs225.RaceManager;
 
 public class RaceView {
 
@@ -70,6 +78,7 @@ public class RaceView {
     private final Label mousePositionLabel;
     private final StackPane[] carMarkers;
     private final Polyline routeOverlay;
+    private RaceManager raceManager;
 
     public RaceView(RaceGameApp app) {
         root = new BorderPane();
@@ -229,6 +238,24 @@ public class RaceView {
 
     public void setPredictedCarName(String carName) {
         predictionLabel.setText("Predicted winner: " + carName);
+    }
+
+    public void setRaceManager(RaceManager manager) {
+        raceManager = manager;
+    }
+
+    public void renderFromRaceManager() {
+        if (raceManager == null) {
+            return;
+        }
+
+        List<Car> cars = raceManager.getCars();
+        int visibleCarCount = Math.min(cars.size(), carMarkers.length);
+
+        for (int i = 0; i < visibleCarCount; i++) {
+            Car car = cars.get(i);
+            updateCarPosition(i, car.getXPos(), car.getYPos());
+        }
     }
 
     public void updateCarPosition(int carIndex, double centerX, double centerY) {
