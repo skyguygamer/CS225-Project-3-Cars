@@ -70,7 +70,9 @@ public class RaceManager {
     
         if (!car.isFinished()) {
             car.move();
-            raceView.updateCarPosition(i, car.getXPos(), car.getYPos());
+            if (raceView != null) {
+                raceView.updateCarPosition(i, car.getXPos(), car.getYPos());
+            }
             allFinished = false;        
         } else {
             if (car.getFinishTime() == 0) {
@@ -135,5 +137,25 @@ public class RaceManager {
     }
     public ArrayList<Car> getCars() {
         return cars;
+    }
+
+    public Car getWinner() {
+        return winner;
+    }
+
+    public boolean isRaceFinished() {
+        return raceFinished;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public double getElapsedTime() {
+        return clock.getTime();
+    }
+
+    public void setRaceView(RaceView view) {
+        this.raceView = view;
     }
 }

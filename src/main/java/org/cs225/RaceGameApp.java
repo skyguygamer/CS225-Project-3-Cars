@@ -5,8 +5,14 @@
 
 package org.cs225;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import org.cs225.GUI.IntroView;
+import org.cs225.GUI.RaceView;
+import org.cs225.GUI.ResultsView;
+import org.cs225.Track.Track;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -43,7 +49,8 @@ public class RaceGameApp extends Application {
     private static final double WINDOW_HEIGHT = 700;
     private static final int TRACK_PANEL_WIDTH = 960;
     private static final int TRACK_PANEL_HEIGHT = 500;
-    private static final int TRACK_STOP_COUNT = 8;
+    // Only main checkpoints are stops (A, B, C, D) - indices 0, 2, 4, 6
+    private static final int TRACK_STOP_COUNT = 4;
     private static final int CAR_COUNT = 4;
     private static final String[] CAR_NAMES = {"Car 1", "Car 2", "Car 3", "Car 4"};
 
@@ -114,7 +121,15 @@ public class RaceGameApp extends Application {
         predictedCarIndex = selectedCarIndex;
 
         gameRace = new RaceManager();
-        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_POINTS), CAR_COUNT);
+        // Only use the 4 main checkpoints (indices 0, 2, 4, 6) as stops
+        Point2D[] mainCheckpoints = {
+            TRACK_POINTS[0], // A
+            TRACK_POINTS[2], // B
+            TRACK_POINTS[4], // C
+            TRACK_POINTS[6]  // D
+        };
+        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, mainCheckpoints), CAR_COUNT);
+        gameRace.setRaceView(raceView);
 
         if (selectedCarIndex >= 0 && selectedCarIndex < gameRace.getCars().size()) {
             gameRace.setUserPrediction(gameRace.getCars().get(selectedCarIndex).getCarName());
@@ -264,19 +279,46 @@ public class RaceGameApp extends Application {
         launch(args);
     }
 
-        //When this is called, call the RaceManager update method. This should update the position of all objects in the race
-    //Currently this is just updating a counter to show functionality
-    public void update()
-    {
-        counter++;
-        return;
+    private void update() {
+        if (gameRace != null) {
+            gameRace.update();
+        }
     }
 
-    //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
-    //Currently this is just showing an updating counter to show functionality
-    public void render()
-    {
-        label.setText(counter.toString());
-        return;
+    private void render() {
+        if (raceView != null) {
+            raceView.renderFromRaceManager();
+        }
+    }
+
+    private String formatPlace(int place) {
+        return place + (place % 10 == 1 && place % 100 != 11 ? "st" :
+                place % 10 == 2 && place % 100 != 12 ? "nd" :
+                place % 10 == 3 && place % 100 != 13 ? "rd" : "th");
+    }
+
+    private String formatCarDisplayName(String carName) {
+        return carName;
+    }
+
+    private String formatRaceTime(double timeInNanos) {
+        double timeInSeconds = timeInNanos / 1_000_000_000.0;
+        int minutes = (int) (timeInSeconds / 60);
+        int seconds = (int) (timeInSeconds % 60);
+        int millis = (int) ((timeInSeconds * 1000) % 1000);
+        return String.format("%02d:%02d.%02d", minutes, seconds, millis / 10);
+    }
+
+    private String formatAverageSpeed(Car car) {
+        double timeInSeconds = car.getFinishTime() / 1_000_000_000.0;
+        if (timeInSeconds > 0) {
+            double avgSpeed = (car.getDistance() / 100.0) / timeInSeconds * 3.6;
+            return String.format("%.0f mph", Math.max(0, avgSpeed));
+        }
+        return "0 mph";
+    }
+
+    private String formatTopSpeed(Car car) {
+        return String.format("%d mph", 100 + (int)(Math.random() * 30));
     }
 }

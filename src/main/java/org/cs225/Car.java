@@ -1,5 +1,6 @@
 package org.cs225;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.cs225.Track.Leg;
@@ -88,11 +89,12 @@ public void move() {
     dy /= length;
 
     //this makes sure the car moves toward the stop based on the speed
-    xPos += dx * speed;
-    yPos += dy * speed;
+    // Speed multiplier to make cars visible (speeds are in 0-2 range, multiply by 10)
+    xPos += dx * speed * 10;
+    yPos += dy * speed * 10;
 
     //this updates the distance traveled
-    distance += speed;
+    distance += speed * 10;
 
     //this checks if we have reached or passed the stop
     double remaining = Math.sqrt(Math.pow(next.getxPos() - xPos, 2) + Math.pow(next.getyPos() - yPos, 2));
