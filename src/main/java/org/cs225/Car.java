@@ -158,6 +158,49 @@ public void move() {
         return finishTime;
     }
 
+    public List<Stop> getPathway() {
+        return Collections.unmodifiableList(pathway);
+    }
+
+    public int getCurrentStopIndex() {
+        return currentStopIndex;
+    }
+
+    public int getCurrentLegIndex() {
+        return currentLegIndex;
+    }
+
+    public int getTotalLegCount() {
+        return legPathway.size();
+    }
+
+    public Stop getCurrentStop() {
+        int safeStopIndex = Math.min(currentStopIndex, pathway.size() - 1);
+        return pathway.get(safeStopIndex);
+    }
+
+    public Stop getCurrentTargetStop() {
+        if (isFinished()) {
+            return null;
+        }
+
+        return legPathway.get(currentLegIndex).getEnd();
+    }
+
+    public String getRouteSummary() {
+        StringBuilder routeSummary = new StringBuilder();
+
+        for (int i = 0; i < pathway.size(); i++) {
+            routeSummary.append(pathway.get(i).getName());
+
+            if (i < pathway.size() - 1) {
+                routeSummary.append(" -> ");
+            }
+        }
+
+        return routeSummary.toString();
+    }
+
     public String getSprite() {
         return sprite;
     }

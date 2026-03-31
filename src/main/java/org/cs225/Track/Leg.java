@@ -28,8 +28,10 @@ public class Leg {
 
         distance = Math.sqrt(Math.pow(end.getxPos() - start.getxPos(), 2) + Math.pow(end.getyPos() - start.getyPos(), 2));
 
-        this.minSpeed = randomizer.nextDouble()*5 + 5; //min speed would be between 5(inclus) meters and 10(exclus)
-        this.maxSpeed = randomizer.nextDouble()*25; //max speed would be 25 meters per second
+        //this.minSpeed = randomizer.nextDouble()*5 + 5; //min speed would be between 5(inclus) meters and 10(exclus)
+        //this.maxSpeed = randomizer.nextDouble()*25; //max speed would be 25 meters per second
+        this.minSpeed = randomizer.nextDouble()*0 + 0; //min speed would be between 5(inclus) meters and 10(exclus)
+        this.maxSpeed = randomizer.nextDouble()*0; //max speed would be 25 meters per second
     }
 
 
@@ -42,8 +44,10 @@ public class Leg {
 
         distance = Math.sqrt(Math.pow(end.getxPos() - start.getxPos(), 2) + Math.pow(end.getyPos() - start.getyPos(), 2));
 
-        this.minSpeed = randomizer.nextDouble()*5 + 5; //min speed would be between 5(inclus) meters and 10(exclus)
-        this.maxSpeed = randomizer.nextDouble()*25; //max speed would be 25 meters per second
+        //this.minSpeed = randomizer.nextDouble()*5 + 5; //min speed would be between 5(inclus) meters and 10(exclus)
+        //this.maxSpeed = randomizer.nextDouble()*25; //max speed would be 25 meters per second
+        this.minSpeed = randomizer.nextDouble()*0 + 0; //min speed would be between 5(inclus) meters and 10(exclus)
+        this.maxSpeed = randomizer.nextDouble()*0; //max speed would be 25 meters per second
     }
 
     public double getDistance() {

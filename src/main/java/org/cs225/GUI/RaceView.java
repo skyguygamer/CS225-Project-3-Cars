@@ -28,10 +28,12 @@ import javafx.scene.shape.Polyline;
 import org.cs225.Car;
 import org.cs225.RaceGameApp;
 import org.cs225.RaceManager;
+import org.cs225.Track.Stop;
 
 public class RaceView {
 
-    private static final boolean DEBUG_TRACK_GEOMETRY = false;
+    private static final boolean DEBUG_TRACK_GEOMETRY = true; // switch to true to enable helpful debugging tools
+    private static final boolean DEBUG_RACE_HUD = true;
 
     private static final Point2D[] PLACEHOLDER_TRACK_POINTS = {
             // Main checkpoint A
@@ -70,23 +72,45 @@ public class RaceView {
             Color.DEEPPINK,
             Color.TEAL
     };
+    private static final Color[] DEBUG_CAR_MARKER_COLORS = {
+            Color.DODGERBLUE,
+            Color.CRIMSON,
+            Color.FORESTGREEN,
+            Color.DARKVIOLET
+    };
+    private static final String[] DEBUG_CAR_TEXT_COLORS = {
+            "#1565c0",
+            "#c62828",
+            "#2e7d32",
+            "#6a1b9a"
+    };
 
     private final BorderPane root;
+    private final StackPane trackContainer;
     private final Pane trackPane;
     private final Label raceStatusLabel;
     private final Label predictionLabel;
     private final Label mousePositionLabel;
+    private final VBox debugHudBox;
+    private final Label debugClockLabel;
     private final StackPane[] carMarkers;
+    private final Circle[] targetMarkers;
+    private final Label[] carDebugLabels;
     private final Polyline routeOverlay;
     private RaceManager raceManager;
 
     public RaceView(RaceGameApp app) {
         root = new BorderPane();
+        trackContainer = new StackPane();
         trackPane = new Pane();
         raceStatusLabel = new Label("Placeholder race in progress.");
         predictionLabel = new Label("Predicted winner: none selected.");
         mousePositionLabel = new Label("Mouse: (--, --)");
+        debugHudBox = new VBox(6);
+        debugClockLabel = new Label("Clock: 0.00s | running=false | finished=false");
         carMarkers = new StackPane[MAIN_CHECKPOINT_INDICES.length];
+        targetMarkers = new Circle[MAIN_CHECKPOINT_INDICES.length];
+        carDebugLabels = new Label[MAIN_CHECKPOINT_INDICES.length];
         routeOverlay = new Polyline();
 
         buildLayout(app);
@@ -116,6 +140,11 @@ public class RaceView {
                         + "-fx-background-radius: 10;"
                         + "-fx-border-radius: 10;"
         );
+
+        trackContainer.setPrefSize(960, 500);
+        trackContainer.setMinSize(960, 500);
+        trackContainer.setAlignment(Pos.TOP_LEFT);
+        trackContainer.getChildren().add(trackPane);
 
         Label noteLabel = new Label(
                 "TODO: Replace this ordered placeholder loop with teammate Stop, Track, and Route data."
@@ -148,12 +177,13 @@ public class RaceView {
         footerBox.setAlignment(Pos.CENTER_LEFT);
 
         root.setTop(headerBox);
-        root.setCenter(trackPane);
+        root.setCenter(trackContainer);
         root.setBottom(footerBox);
 
         BorderPane.setMargin(headerBox, new Insets(0, 0, 18, 0));
-        BorderPane.setMargin(trackPane, new Insets(0, 0, 18, 0));
+        BorderPane.setMargin(trackContainer, new Insets(0, 0, 18, 0));
 
+        configureDebugHud();
         configureMouseTracking();
     }
 
@@ -189,6 +219,12 @@ public class RaceView {
             } else {
                 drawMiniPoint(trackPoint);
             }
+        }
+
+        for (int i = 0; i < targetMarkers.length; i++) {
+            Circle targetMarker = createTargetMarker(i);
+            targetMarkers[i] = targetMarker;
+            trackPane.getChildren().add(targetMarker);
         }
 
         for (int i = 0; i < carMarkers.length; i++) {
@@ -242,6 +278,10 @@ public class RaceView {
 
     public void setRaceManager(RaceManager manager) {
         raceManager = manager;
+
+        if (manager == null) {
+            resetDebugHud();
+        }
     }
 
     public void renderFromRaceManager() {
@@ -256,6 +296,8 @@ public class RaceView {
             Car car = cars.get(i);
             updateCarPosition(i, car.getXPos(), car.getYPos());
         }
+
+        updateDebugHud(cars);
     }
 
     public void updateCarPosition(int carIndex, double centerX, double centerY) {
@@ -295,6 +337,8 @@ public class RaceView {
             Point2D startingPoint = PLACEHOLDER_TRACK_POINTS[MAIN_CHECKPOINT_INDICES[i]];
             updateCarPosition(i, startingPoint.getX(), startingPoint.getY());
         }
+
+        resetDebugHud();
     }
 
     private void addClosedLoopPoints(Polyline polyline) {
@@ -415,6 +459,163 @@ public class RaceView {
 
     private boolean isMainCheckpointIndex(int pointIndex) {
         return pointIndex % 2 == 0;
+    }
+
+    private void configureDebugHud() {
+        debugHudBox.setPrefWidth(325);
+        debugHudBox.setMinWidth(325);
+        debugHudBox.setMaxWidth(325);
+        debugHudBox.setSpacing(8);
+        debugHudBox.setPadding(new Insets(12));
+        debugHudBox.setStyle(
+                "-fx-background-color: rgba(255,255,255,0.96);"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-border-color: #bdbdbd;"
+                        + "-fx-border-radius: 12;"
+                        + "-fx-border-width: 1.5;"
+        );
+        debugHudBox.setVisible(DEBUG_RACE_HUD);
+        debugHudBox.setManaged(DEBUG_RACE_HUD);
+        debugHudBox.setMouseTransparent(true);
+
+        Label debugTitleLabel = new Label("Live Race Debug");
+        debugTitleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        debugClockLabel.setStyle(
+                "-fx-font-size: 11px;"
+                        + "-fx-font-family: 'Consolas';"
+                        + "-fx-font-weight: bold;"
+        );
+        debugClockLabel.setWrapText(true);
+
+        Label debugLegendLabel = new Label(
+                "Each row shows a car's full route, current target, live speed, and finish state."
+        );
+        debugLegendLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #555555;");
+        debugLegendLabel.setWrapText(true);
+
+        debugHudBox.getChildren().addAll(debugTitleLabel, debugClockLabel, debugLegendLabel);
+
+        for (int i = 0; i < carDebugLabels.length; i++) {
+            Label carDebugLabel = createCarDebugLabel(i);
+            carDebugLabels[i] = carDebugLabel;
+            debugHudBox.getChildren().add(carDebugLabel);
+        }
+
+        if (DEBUG_RACE_HUD) {
+            StackPane.setAlignment(debugHudBox, Pos.TOP_RIGHT);
+            StackPane.setMargin(debugHudBox, new Insets(14));
+            trackContainer.getChildren().add(debugHudBox);
+        }
+    }
+
+    private Label createCarDebugLabel(int carIndex) {
+        Label carDebugLabel = new Label();
+        carDebugLabel.setStyle(
+                "-fx-font-size: 11px;"
+                        + "-fx-font-family: 'Consolas';"
+                        + "-fx-background-color: rgba(248,248,248,0.98);"
+                        + "-fx-padding: 8 10 8 10;"
+                        + "-fx-background-radius: 8;"
+                        + "-fx-border-color: #d0d0d0;"
+                        + "-fx-border-radius: 8;"
+        );
+        carDebugLabel.setTextFill(Color.web(DEBUG_CAR_TEXT_COLORS[carIndex]));
+        carDebugLabel.setWrapText(true);
+        carDebugLabel.setPrefWidth(301);
+        carDebugLabel.setMinHeight(Region.USE_PREF_SIZE);
+        carDebugLabel.setMaxWidth(Double.MAX_VALUE);
+        return carDebugLabel;
+    }
+
+    private Circle createTargetMarker(int carIndex) {
+        Circle targetMarker = new Circle(14);
+        targetMarker.setFill(Color.TRANSPARENT);
+        targetMarker.setStroke(DEBUG_CAR_MARKER_COLORS[carIndex]);
+        targetMarker.setStrokeWidth(3);
+        targetMarker.setVisible(false);
+        targetMarker.setMouseTransparent(true);
+        return targetMarker;
+    }
+
+    private void updateDebugHud(List<Car> cars) {
+        if (!DEBUG_RACE_HUD) {
+            return;
+        }
+
+        debugClockLabel.setText(
+                "Clock: " + formatDebugNumber(raceManager.getElapsedTime()) + "s"
+                        + " | running=" + raceManager.isRunning()
+                        + " | finished=" + raceManager.isRaceFinished()
+        );
+
+        for (int i = 0; i < carDebugLabels.length; i++) {
+            if (i < cars.size()) {
+                Car car = cars.get(i);
+                carDebugLabels[i].setText(buildCarDebugText(i, car));
+                updateTargetMarker(i, car.getCurrentTargetStop());
+            } else {
+                carDebugLabels[i].setText("C" + (i + 1) + " | no car data");
+                targetMarkers[i].setVisible(false);
+            }
+        }
+    }
+
+    private void resetDebugHud() {
+        if (!DEBUG_RACE_HUD) {
+            return;
+        }
+
+        debugClockLabel.setText("Clock: 0.00s | running=false | finished=false");
+
+        for (int i = 0; i < carDebugLabels.length; i++) {
+            carDebugLabels[i].setText("C" + (i + 1) + " | waiting for route data");
+            targetMarkers[i].setVisible(false);
+        }
+    }
+
+    private void updateTargetMarker(int carIndex, Stop targetStop) {
+        Circle targetMarker = targetMarkers[carIndex];
+
+        if (targetStop == null) {
+            targetMarker.setVisible(false);
+            return;
+        }
+
+        targetMarker.setCenterX(targetStop.getxPos());
+        targetMarker.setCenterY(targetStop.getyPos());
+        targetMarker.setVisible(true);
+    }
+
+    private String buildCarDebugText(int carIndex, Car car) {
+        String legProgress;
+
+        if (car.isFinished()) {
+            legProgress = car.getTotalLegCount() + "/" + car.getTotalLegCount();
+        } else {
+            legProgress = (car.getCurrentLegIndex() + 1) + "/" + car.getTotalLegCount();
+        }
+
+        return "C" + (carIndex + 1)
+                + " | leg " + legProgress
+                + " | target " + formatStopName(car.getCurrentTargetStop())
+                + " | speed " + formatDebugNumber(car.getSpeed())
+                + "\nroute: " + car.getRouteSummary()
+                + "\nfrom " + formatStopName(car.getCurrentStop())
+                + " | xy=(" + Math.round(car.getXPos()) + ", " + Math.round(car.getYPos()) + ")"
+                + " | done=" + car.isFinished();
+    }
+
+    private String formatStopName(Stop stop) {
+        if (stop == null) {
+            return "FINISH";
+        }
+
+        return stop.getName();
+    }
+
+    private String formatDebugNumber(double value) {
+        return String.format("%.2f", value);
     }
 
     private void validateCarIndex(int carIndex) {

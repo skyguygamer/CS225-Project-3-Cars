@@ -165,6 +165,10 @@ public class RaceManager {
         return winner;
     }
 
+    public double getElapsedTime() {
+        return clock.getTime();
+    }
+
     private ArrayList<Stop> getFallbackStartingStops(ArrayList<Stop> allStops, Stop finishStop, int numCars) {
         ArrayList<Stop> fallbackStops = new ArrayList<>();
 
