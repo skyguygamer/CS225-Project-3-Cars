@@ -11,18 +11,25 @@ public class RaceManager {
     private String userPrediction;
     private Car winner;
     private boolean running;
+    private boolean raceFinished;
 
     public RaceManager() {
         cars = new ArrayList<>();
         clock = new RaceClock();
         running = false;
+        raceFinished = false;
     }
 
     //this sets up the race
     public void setupRace(Track track, int numCars) {
+        cars.clear();
+        winner = null;
+        running = false;
+        raceFinished = false;
+        clock.reset();
 
         //creates the whole track
-        track.generateStops();
+        //track.generateStops();
         track.generateLegs();
 
         //gets unique fair routes for each car with unique start and finish points
@@ -38,8 +45,16 @@ public class RaceManager {
 
     //starts the race
     public void startRace() {
-        running = true;
+        winner = null;
+        raceFinished = false;
         clock.reset();
+
+        if (cars.isEmpty()) {
+            running = false;
+            return;
+        }
+
+        running = true;
         clock.start();
     }
 
@@ -71,6 +86,7 @@ public class RaceManager {
     //ends the race
     public void stopRace() {
         running = false;
+        raceFinished = true;
         clock.pause();
         determineWinner();
     }
