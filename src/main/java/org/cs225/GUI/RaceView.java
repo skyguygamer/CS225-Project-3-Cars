@@ -209,7 +209,7 @@ public class RaceView {
         routeOverlay.setStroke(Color.GOLDENROD);
         routeOverlay.setStrokeWidth(5);
         routeOverlay.getStrokeDashArray().addAll(10.0, 8.0);
-        routeOverlay.setVisible(false);
+        routeOverlay.setVisible(true);
         routeOverlay.setFill(null);
 
         trackPane.getChildren().addAll(trackOutline, centerLine, routeOverlay);

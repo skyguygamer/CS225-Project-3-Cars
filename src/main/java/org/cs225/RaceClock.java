@@ -7,10 +7,10 @@ public class RaceClock{
     //this controls much time passes per tick
     private double tickSize;
 
-    public RaceClock() {
+    public RaceClock(int ticksPerSecond) {
         this.time = 0;
         this.running = false;
-        this.tickSize = 0.016;
+        this.tickSize = 1.0/ticksPerSecond;
     }
 
     public void start() {

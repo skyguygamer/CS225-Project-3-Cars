@@ -208,4 +208,25 @@ public void move() {
     public boolean isFinished() {
         return currentLegIndex >= legPathway.size();
     }
+
+    
+    public double getTotalDistance()
+    {
+        double d = 0.0;
+        for (Leg leg : legPathway) {
+            d += leg.getDistance();
+        }
+
+        return d;
+    }
+
+    public double getAverageSpeed()
+    {
+        double totalDistance = getTotalDistance();
+        System.out.print("Total distance: " + totalDistance + " finish time: " + finishTime);
+
+        return totalDistance/finishTime;
+    }
+
+    
 }

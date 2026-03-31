@@ -7,6 +7,7 @@ package org.cs225;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -16,6 +17,11 @@ import org.cs225.GUI.*;
 import org.cs225.Track.*;
 
 public class RaceGameApp extends Application {
+
+
+    public static final int TICKS_PER_SECOND = 100;
+    public static final long TICK_LENGTH = TimeUnit.SECONDS.toNanos(1L)/ TICKS_PER_SECOND;
+    private long startTime;
 
     public static final int INTRO_SCENE = 0;
     public static final int RACE_SCENE = 1;
@@ -88,6 +94,7 @@ public class RaceGameApp extends Application {
         if (sceneNumber == INTRO_SCENE) {
             primaryStage.setScene(introScene);
         } else if (sceneNumber == RACE_SCENE) {
+            startTime = System.nanoTime();
             primaryStage.setScene(raceScene);
         } else if (sceneNumber == RESULTS_SCENE) {
             primaryStage.setScene(resultsScene);
@@ -100,8 +107,13 @@ public class RaceGameApp extends Application {
         return new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update();
-                render();
+                long currentTime = System.nanoTime();
+                if(TICK_LENGTH <= currentTime - startTime)
+                {
+                    update();
+                    render();
+                    startTime = currentTime;
+                }
 
                 if (gameRace != null && gameRace.isRaceFinished()) {
                     raceView.setRaceStatus("Race finished.");
@@ -114,7 +126,7 @@ public class RaceGameApp extends Application {
     public void startRace(int selectedCarIndex) {
         predictedCarIndex = selectedCarIndex;
 
-        gameRace = new RaceManager();
+        gameRace = new RaceManager(TICKS_PER_SECOND);
         gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_POINTS), CAR_COUNT);
 
         if (selectedCarIndex >= 0 && selectedCarIndex < gameRace.getCars().size()) {
@@ -301,7 +313,7 @@ public class RaceGameApp extends Application {
         }
 
         // TODO: Replace generic numeric formatting once teammate speed units are finalized.
-        double averageSpeed = car.getDistance() / car.getFinishTime();
+        double averageSpeed = car.getAverageSpeed();
         return String.format("%.2f", averageSpeed);
     }
 

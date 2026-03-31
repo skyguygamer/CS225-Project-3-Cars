@@ -10,12 +10,14 @@ public class RaceManager {
     private Car winner;
     private boolean running;
     private boolean raceFinished;
+    private int ticksPerSecond;
 
-    public RaceManager() {
+    public RaceManager(int ticksPerSecond) {
         cars = new ArrayList<>();
-        clock = new RaceClock();
         running = false;
         raceFinished = false;
+        this.ticksPerSecond = ticksPerSecond;
+        clock = new RaceClock(ticksPerSecond);
     }
 
     //this sets up the race
