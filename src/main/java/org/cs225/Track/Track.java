@@ -1,7 +1,7 @@
 package org.cs225.Track;
 
-/*
-    Tristan worked on this class
+/**
+   @author Tristan
 
     This class is the Track class and holds the entire race as its stops, its legs, and the possible routes.
     It manageds the stops and legs between them. It randomizes the stops and their legs while also producing routes which
@@ -53,6 +53,14 @@ public class Track {
         this.randomSeed = randomSeed;
     }
 
+
+    /**
+     * @author Matthew
+     * Constructor that uses an array of predefined points to generate a track
+     * @param screenWidth width of the game screen
+     * @param screenHeight height of the game screen
+     * @param track_points an array of Point2Ds, predefined
+     */
     public Track(int screenWidth, int screenHeight, Point2D[]track_points) {
         legs = new ArrayList<Leg>();
         stops = new ArrayList<Stop>();
@@ -89,6 +97,7 @@ public class Track {
         legs.clear();
 
         if (stops.size() < 2) {
+            System.out.print(stops.size());
             System.out.println("Stops were not generated!");
             return;
         }

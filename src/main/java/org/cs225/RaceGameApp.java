@@ -4,28 +4,16 @@
  */
 
 package org.cs225;
-
-/*
-    Gabriel worked on this class
-
-    This class is 
- */
-
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.cs225.GUI.IntroView;
-import org.cs225.GUI.RaceView;
-import org.cs225.GUI.ResultsView;
-import org.cs225.Track.Track;
+import org.cs225.GUI.*;
+import org.cs225.Track.*;
 
 public class RaceGameApp extends Application {
 
@@ -127,7 +115,7 @@ public class RaceGameApp extends Application {
         predictedCarIndex = selectedCarIndex;
 
         gameRace = new RaceManager();
-        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_STOP_COUNT), CAR_COUNT);
+        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_POINTS), CAR_COUNT);
 
         if (selectedCarIndex >= 0 && selectedCarIndex < gameRace.getCars().size()) {
             gameRace.setUserPrediction(gameRace.getCars().get(selectedCarIndex).getCarName());
