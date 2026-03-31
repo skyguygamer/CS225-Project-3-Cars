@@ -9,15 +9,22 @@ public class RaceManager {
     private String userPrediction;
     private Car winner;
     private boolean running;
+    private boolean raceFinished;
 
     public RaceManager() {
         cars = new ArrayList<>();
         clock = new RaceClock();
         running = false;
+        raceFinished = false;
     }
 
     //this sets up the race
     public void setupRace(Track track, int numCars) {
+        cars.clear();
+        winner = null;
+        running = false;
+        raceFinished = false;
+        clock.reset();
 
         //creates the whole track
         //track.generateStops();
@@ -29,6 +36,11 @@ public class RaceManager {
         //this gets the fair starting positions
         ArrayList<Stop> startingStops =
                 track.getFairStartingStops(finishStop, numCars);
+
+        // TODO: Remove this fallback once teammate track generation always provides 4 fair starts.
+        if (startingStops.size() < numCars) {
+            startingStops = getFallbackStartingStops(track.getStops(), finishStop, numCars);
+        }
 
         //builds the routes to each car
         for (int i = 0; i < startingStops.size(); i++) {
@@ -45,42 +57,51 @@ public class RaceManager {
 
     //starts the race
     public void startRace() {
-        running = true;
+        winner = null;
+        raceFinished = false;
         clock.reset();
+
+        if (cars.isEmpty()) {
+            running = false;
+            return;
+        }
+
+        running = true;
         clock.start();
-        gameLoop();
     }
 
-    //race loop
-    public void gameLoop() {
-        while (running) {
-            boolean allFinished = true;
-            clock.tick();
+    //advances the simulation by one step
+    public void updateTick() {
+        if (!running) {
+            return;
+        }
 
-            for (Car car : cars) {
-                if (!car.isFinished()) {
-                    car.move();
-                    allFinished = false;
-                } else {
-                    if (car.getFinishTime() == 0) {
-                        car.setFinishTime(clock.getTime());
-                    }
+        boolean allFinished = true;
+        clock.tick();
+
+        for (Car car : cars) {
+            if (!car.isFinished()) {
+                car.move();
+            }
+
+            if (car.isFinished()) {
+                if (car.getFinishTime() == 0) {
+                    car.setFinishTime(clock.getTime());
                 }
+            } else {
+                allFinished = false;
             }
-            if (allFinished) {
-                stopRace();
-            }
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+
+        if (allFinished) {
+            stopRace();
         }
     }
 
     //ends the race
     public void stopRace() {
         running = false;
+        raceFinished = true;
         clock.pause();
         determineWinner();
     }
@@ -126,5 +147,39 @@ public class RaceManager {
         }
 
         return sb.toString();
+    }
+
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public boolean isRaceFinished() {
+        return raceFinished;
+    }
+
+    public Car getWinner() {
+        return winner;
+    }
+
+    private ArrayList<Stop> getFallbackStartingStops(ArrayList<Stop> allStops, Stop finishStop, int numCars) {
+        ArrayList<Stop> fallbackStops = new ArrayList<>();
+
+        for (Stop stop : allStops) {
+            if (stop == finishStop) {
+                continue;
+            }
+
+            fallbackStops.add(stop);
+
+            if (fallbackStops.size() == numCars) {
+                break;
+            }
+        }
+
+        return fallbackStops;
     }
 }
