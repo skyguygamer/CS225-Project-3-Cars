@@ -382,6 +382,37 @@ public class Track {
     }
 
 
+    //Get fair unique routes for each car with unique start and finish points
+    public ArrayList<Route> getFairUniqueRoutesForCars(int numCars) {
+        ArrayList<Route> uniqueRoutes = new ArrayList<Route>();
+
+        if (numCars <= 0 || stops.size() < 3) {
+            return uniqueRoutes;
+        }
+
+        // For each car, rotate the finish stop and find fair starting positions
+        for (int carIndex = 0; carIndex < numCars; carIndex++) {
+            // Rotate finish stop for this car
+            int finishIndex = carIndex % stops.size();
+            Stop finishStop = stops.get(finishIndex);
+
+            // Get fair starting positions for this finish stop
+            ArrayList<Stop> fairStarts = getFairStartingStops(finishStop, 1);
+
+            // If we got a valid starting stop, build the route
+            if (fairStarts.size() > 0) {
+                Stop startStop = fairStarts.get(0);
+                Route route = buildRoute(startStop, finishStop);
+
+                if (route != null) {
+                    uniqueRoutes.add(route);
+                }
+            }
+        }
+
+        return uniqueRoutes;
+    }
+
     /*
     //Assigns starting Stops and the Finish line stop
     public void assignStartAndFinishStops() {

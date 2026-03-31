@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 import org.cs225.GUI.RaceView;
 import org.cs225.Track.Route;
-import org.cs225.Track.Stop;
 import org.cs225.Track.Track;
 public class RaceManager {
     private RaceView raceView;
@@ -26,22 +25,12 @@ public class RaceManager {
         track.generateStops();
         track.generateLegs();
 
-        //picks a finishing stop
-        Stop finishStop = track.getStops().get(0);
+        //gets unique fair routes for each car with unique start and finish points
+        ArrayList<Route> uniqueRoutes = track.getFairUniqueRoutesForCars(numCars);
 
-        //this gets the fair starting positions
-        ArrayList<Stop> startingStops =
-        track.getFairStartingStops(finishStop, numCars);
-                track.getFairStartingStops(finishStop, numCars);
-
-        //builds the routes to each car
-        for (int i = 0; i < startingStops.size(); i++) {
-            Stop start = startingStops.get(i);
-            Route route = track.buildRoute(start, finishStop);
-            if (route == null){
-                continue;
-            }
-
+        //builds a car for each route
+        for (int i = 0; i < uniqueRoutes.size(); i++) {
+            Route route = uniqueRoutes.get(i);
             Car car = new Car(route.getStops(), route.getLegs(), "Car" + (i + 1), "car" + (i + 1) + ".png");
             cars.add(car);
         }

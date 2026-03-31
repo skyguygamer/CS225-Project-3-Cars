@@ -1,9 +1,7 @@
 package org.cs225;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.cs225.GUI.IntroView;
+import org.cs225.GUI.*;
 import org.cs225.GUI.RaceView;
 import org.cs225.GUI.ResultsView;
 import org.cs225.Track.Track;
@@ -193,8 +191,6 @@ public class RaceGameApp extends Application {
         launch(args);
     }
 
-        //When this is called, call the RaceManager update method. This should update the position of all objects in the race
-    //Currently this is just updating a counter to show functionality
     public void update()
     {
        if (gameRace != null) {
@@ -203,11 +199,9 @@ public class RaceGameApp extends Application {
     counter++;
     }
 
-    //When this is called, call SceneApp update/render method. This should update the scene to match the current game state
-    //Currently this is just showing an updating counter to show functionality
    public void render() {
     if (label != null) {
         label.setText(counter.toString());
     }
-}
+   }
 }
