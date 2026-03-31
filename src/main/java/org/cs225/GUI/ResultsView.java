@@ -1,11 +1,5 @@
 package org.cs225.GUI;
 
-/*
-    Gabriel worked on this class
-
-    This class is 
- */
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +12,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.cs225.RaceGameApp;
 
+/**
+ * Displays the end-of-race outcome, prediction result, and summary stats for
+ * each car.
+ *
+ * @author Gabriel Ferreira
+ */
 public class ResultsView {
 
     private static final int RESULT_ROW_COUNT = 4;
@@ -33,6 +33,11 @@ public class ResultsView {
     private final Label[] averageSpeedLabels;
     private final Label[] topSpeedLabels;
 
+    /**
+     * Creates the results view layout.
+     *
+     * @param app the main JavaFX application
+     */
     public ResultsView(RaceGameApp app) {
         root = new VBox(18);
         predictionSummaryLabel = new Label("Race results will appear here.");
@@ -71,7 +76,7 @@ public class ResultsView {
         GridPane resultsGrid = createResultsGrid();
 
         Label noteLabel = new Label(
-                "TODO: Wire each row's fixed route plus segment-by-segment speed and time details from RaceManager once that data is exposed."
+                "Results are listed in finishing order with each car's elapsed time, average speed, and top speed."
         );
         noteLabel.setWrapText(true);
         noteLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #666666;");
@@ -79,7 +84,6 @@ public class ResultsView {
 
         Button restartButton = new Button("Restart Race");
         restartButton.setOnAction(event -> {
-            // TODO: If a RaceController becomes the app's entry point, call the controller here.
             app.restartRace();
         });
 
@@ -143,6 +147,7 @@ public class ResultsView {
 
     private Label createRouteLabel() {
         Label routeLabel = createValueLabel();
+        // Route text can be longer than the other columns, so allow wrapping here.
         routeLabel.setWrapText(true);
         routeLabel.setMaxWidth(250);
         return routeLabel;
@@ -163,10 +168,22 @@ public class ResultsView {
         return spriteHolder;
     }
 
+    /**
+     * Returns the root node for this scene.
+     *
+     * @return the results view root
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * Updates the prediction summary shown above the results table.
+     *
+     * @param predictedCarName the car chosen by the user
+     * @param winnerName the actual winning car
+     * @param predictionWasCorrect whether the prediction matched the winner
+     */
     public void setPredictionSummary(String predictedCarName, String winnerName, boolean predictionWasCorrect) {
         predictionSummaryLabel.setText(
                 "Predicted winner: " + predictedCarName
@@ -175,6 +192,11 @@ public class ResultsView {
         );
     }
 
+    /**
+     * Sets custom summary text for the prediction area.
+     *
+     * @param summaryText the text to display
+     */
     public void setPredictionSummaryText(String summaryText) {
         predictionSummaryLabel.setText(summaryText);
     }
@@ -188,6 +210,7 @@ public class ResultsView {
             String averageSpeedText,
             String topSpeedText
     ) {
+        // Older calls can still use this shorter version until route text is fully wired in.
         setResultRow(
                 rowIndex,
                 carIndex,
@@ -221,6 +244,9 @@ public class ResultsView {
         topSpeedLabels[rowIndex].setText(topSpeedText);
     }
 
+    /**
+     * Shows placeholder row values until real race results are loaded.
+     */
     public void showPlaceholderResults() {
         predictionSummaryLabel.setText("Finish the race to see whether the prediction was correct.");
 
@@ -230,6 +256,9 @@ public class ResultsView {
         setResultRow(3, 3, "4th", "Car 4", "Assigned when race starts", "Placeholder", "Placeholder", "Placeholder");
     }
 
+    /**
+     * Clears the results table to its empty state.
+     */
     public void clearResults() {
         predictionSummaryLabel.setText("Race results will appear here.");
 
@@ -241,6 +270,7 @@ public class ResultsView {
     private void setRowSprite(int rowIndex, int carIndex) {
         validateRowIndex(rowIndex);
 
+        // Rebuild the sprite so the row matches the car currently shown in that place.
         Node spriteGraphic = CarSpriteLoader.createCarGraphic(
                 CarSpriteLoader.getSpriteForIndex(carIndex),
                 CarSpriteLoader.DEFAULT_SPRITE_WIDTH,

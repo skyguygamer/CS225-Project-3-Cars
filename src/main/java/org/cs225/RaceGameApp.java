@@ -1,8 +1,3 @@
-/**
- * @author Gabriel
- * @author Matthew
- */
-
 package org.cs225;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,6 +10,12 @@ import javafx.stage.Stage;
 import org.cs225.GUI.*;
 import org.cs225.Track.*;
 
+/**
+ * Starts the JavaFX application, builds the scenes, and coordinates the main
+ * update and render loop for the race.
+ *
+ * @author Gabriel Ferreira
+ */
 public class RaceGameApp extends Application {
 
     public static final int INTRO_SCENE = 0;
@@ -51,7 +52,6 @@ public class RaceGameApp extends Application {
 
     private Stage primaryStage;
 
-    // TODO: Feed these views with real controller/model data once teammate integration is ready.
     private IntroView introView;
     private RaceView raceView;
     private ResultsView resultsView;
@@ -64,6 +64,11 @@ public class RaceGameApp extends Application {
     private AnimationTimer animator;
     private int predictedCarIndex = -1;
 
+    /**
+     * Starts the application and shows the intro scene.
+     *
+     * @param stage the primary JavaFX stage
+     */
     @Override
     public void start(Stage stage) {
         primaryStage = stage;
@@ -85,6 +90,11 @@ public class RaceGameApp extends Application {
         resultsScene = new Scene(resultsView.getRoot(), WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
+    /**
+     * Switches the main window to the requested scene.
+     *
+     * @param sceneNumber the scene constant to display
+     */
     public void changeScene(int sceneNumber) {
         if (sceneNumber == INTRO_SCENE) {
             primaryStage.setScene(introScene);
@@ -101,6 +111,7 @@ public class RaceGameApp extends Application {
         return new AnimationTimer() {
             @Override
             public void handle(long now) {
+                // Each animation pulse advances the race once, then redraws the scene.
                 update();
                 render();
 
@@ -112,6 +123,11 @@ public class RaceGameApp extends Application {
         };
     }
 
+    /**
+     * Sets up and starts a new race for the selected predicted winner.
+     *
+     * @param selectedCarIndex the predicted winner chosen in the intro view
+     */
     public void startRace(int selectedCarIndex) {
         predictedCarIndex = selectedCarIndex;
 
@@ -135,12 +151,15 @@ public class RaceGameApp extends Application {
         if (gameRace.isRunning()) {
             animator.start();
         } else {
-            raceView.setRaceStatus("Race could not start. TODO: verify teammate Track data and starting positions.");
+            raceView.setRaceStatus("Race could not start. Verify track data and starting positions.");
         }
 
         changeScene(RACE_SCENE);
     }
 
+    /**
+     * Stops the animation loop and switches to the results screen.
+     */
     public void showResults() {
         if (animator != null) {
             animator.stop();
@@ -151,7 +170,7 @@ public class RaceGameApp extends Application {
         } else {
             if (predictedCarIndex >= 0) {
                 resultsView.setPredictionSummaryText(
-                        "Race ended before official results were available. TODO: replace this fallback with controller-driven results."
+                        "Race ended before official results were available."
                 );
             } else {
                 resultsView.setPredictionSummaryText("No prediction was selected before the race.");
@@ -162,6 +181,9 @@ public class RaceGameApp extends Application {
         changeScene(RESULTS_SCENE);
     }
 
+    /**
+     * Resets app state and returns to the intro screen.
+     */
     public void restartRace() {
         if (animator != null) {
             animator.stop();
@@ -174,7 +196,6 @@ public class RaceGameApp extends Application {
         raceView.resetForNewRace();
         resultsView.showPlaceholderResults();
 
-        // TODO: Reset shared controller/model state here once the final controller owns race setup.
         changeScene(INTRO_SCENE);
     }
 
@@ -195,10 +216,12 @@ public class RaceGameApp extends Application {
 
         List<Car> carsInOriginalOrder = new ArrayList<>(gameRace.getCars());
         List<Car> rankedCars = new ArrayList<>(carsInOriginalOrder);
+        // Sort a copy so we can show finish order without losing each car's original index.
         rankedCars.sort(Comparator.comparingDouble(Car::getFinishTime));
 
         for (int row = 0; row < rankedCars.size() && row < CAR_NAMES.length; row++) {
             Car car = rankedCars.get(row);
+            // The original index is still used to pick the correct sprite color in the results table.
             int carIndex = carsInOriginalOrder.indexOf(car);
 
             resultsView.setResultRow(
@@ -213,7 +236,6 @@ public class RaceGameApp extends Application {
         }
 
         if (predictedCarIndex >= 0) {
-            // TODO: Replace this placeholder overlay with the teammate-provided route once route data is exposed.
             raceView.showPredictedRoute(createPlaceholderRouteForCar(predictedCarIndex));
         }
     }
@@ -224,8 +246,6 @@ public class RaceGameApp extends Application {
         resultsView.setResultRow(2, 0, "3rd", CAR_NAMES[0], "01:22.03", "87 mph", "110 mph");
         resultsView.setResultRow(3, 2, "4th", CAR_NAMES[2], "01:24.91", "84 mph", "107 mph");
 
-        // TODO: When the real route data exists, consider showing the predicted route on RaceView
-        // before switching to the results scene.
         if (predictedCarIndex >= 0) {
             raceView.showPredictedRoute(createPlaceholderRouteForCar(predictedCarIndex));
         }
@@ -263,11 +283,18 @@ public class RaceGameApp extends Application {
         );
     }
 
+    /**
+     * Launches the JavaFX application.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
-    // Advances the simulation by one step from the JavaFX AnimationTimer.
+    /**
+     * Advances the simulation by one step from the JavaFX animation loop.
+     */
     public void update() {
         if (gameRace == null) {
             return;
@@ -276,7 +303,9 @@ public class RaceGameApp extends Application {
         gameRace.updateTick();
     }
 
-    // Re-renders the race scene from the latest RaceManager state.
+    /**
+     * Re-renders the race scene from the latest race data.
+     */
     public void render() {
         raceView.renderFromRaceManager();
     }
@@ -314,7 +343,6 @@ public class RaceGameApp extends Application {
     }
 
     private String formatTopSpeed(Car car) {
-        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
         return String.format("%.2f", car.getTopSpeed());
     }
 

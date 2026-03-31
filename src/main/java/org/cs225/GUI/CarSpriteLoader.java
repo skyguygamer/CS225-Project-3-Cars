@@ -1,11 +1,5 @@
 package org.cs225.GUI;
 
-/*
-    Gabriel worked on this class
-
-    This class is 
- */
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;
@@ -19,6 +13,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Loads car sprite images for the JavaFX views and provides simple fallbacks
+ * if an image resource is missing.
+ *
+ * @author Gabriel Ferreira
+ */
 public final class CarSpriteLoader {
 
     public static final double DEFAULT_SPRITE_WIDTH = 110;
@@ -50,6 +50,7 @@ public final class CarSpriteLoader {
     public static ImageView createCarImageView(CarSpriteType spriteType, double fitWidth, double fitHeight) {
         Image image = loadCarImage(spriteType);
 
+        // If the real image could not be loaded, the caller will switch to a placeholder graphic.
         if (image == null || image.isError()) {
             return null;
         }
@@ -73,10 +74,12 @@ public final class CarSpriteLoader {
     }
 
     private static Image loadCarImage(CarSpriteType spriteType) {
+        // Reuse images after the first load so the same PNG is not read again and again.
         if (IMAGE_CACHE.containsKey(spriteType)) {
             return IMAGE_CACHE.get(spriteType);
         }
 
+        // Try to load the sprite from the resources folder.
         try (InputStream inputStream = CarSpriteLoader.class.getResourceAsStream(spriteType.getResourcePath())) {
             if (inputStream == null) {
                 IMAGE_CACHE.put(spriteType, null);
@@ -98,6 +101,7 @@ public final class CarSpriteLoader {
     }
 
     private static StackPane createPlaceholderGraphic(CarSpriteType spriteType, double width, double height) {
+        // This simple fallback keeps the GUI usable even if an image file is missing.
         Rectangle placeholder = new Rectangle(width, height);
         placeholder.setArcWidth(12);
         placeholder.setArcHeight(12);
@@ -115,6 +119,11 @@ public final class CarSpriteLoader {
         return placeholderPane;
     }
 
+    /**
+     * Stores the available car sprite options used by the GUI.
+     *
+     * @author Gabriel Ferreira
+     */
     public enum CarSpriteType {
         BLUE("Blue Car", "BLUE", "/images/car_blue.png", Color.DODGERBLUE),
         RED("Red Car", "RED", "/images/car_red.png", Color.CRIMSON),

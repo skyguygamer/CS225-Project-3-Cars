@@ -1,10 +1,5 @@
 package org.cs225.GUI;
 
-/*
-    Gabriel worked on this class
-
-    This class is 
- */
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,6 +16,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.cs225.RaceGameApp;
 
+/**
+ * Builds the intro screen where the user selects a predicted winner before
+ * the race can begin.
+ *
+ * @author Gabriel Ferreira
+ */
 public class IntroView {
 
     private static final String[] DEFAULT_CAR_NAMES = {"Car 1", "Car 2", "Car 3", "Car 4"};
@@ -31,6 +32,11 @@ public class IntroView {
     private final Label selectionStatusLabel;
     private final HBox[] optionRows;
 
+    /**
+     * Creates the intro view and wires its controls to the app.
+     *
+     * @param app the main JavaFX application
+     */
     public IntroView(RaceGameApp app) {
         carSelectionGroup = new ToggleGroup();
         startRaceButton = new Button("Start Race");
@@ -64,6 +70,7 @@ public class IntroView {
         selectionStatusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #444444;");
         selectionStatusLabel.setWrapText(true);
 
+        // Keep the label, button state, and row highlight synced with the selected car.
         carSelectionGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
             updateSelectionStatus();
             startRaceButton.setDisable(newToggle == null);
@@ -74,8 +81,8 @@ public class IntroView {
         startRaceButton.setMinWidth(180);
         startRaceButton.setOnAction(event -> {
             int selectedCarIndex = getSelectedCarIndex();
+            // Only start the race when the user has actually picked a car.
             if (selectedCarIndex >= 0) {
-                // TODO: If the team adds RaceController, call the controller here instead of the app directly.
                 app.startRace(selectedCarIndex);
             }
         });
@@ -87,7 +94,7 @@ public class IntroView {
         buttonRow.setAlignment(Pos.CENTER);
 
         Label integrationNoteLabel = new Label(
-                "TODO: Replace these default car names with teammate model data when Car objects are available."
+                "Choose one car before the race begins so your prediction can be checked at the end."
         );
         integrationNoteLabel.setWrapText(true);
         integrationNoteLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #666666;");
@@ -143,6 +150,7 @@ public class IntroView {
         optionRow.setPadding(new Insets(14));
         optionRow.setStyle(getOptionRowStyle(false));
 
+        // Let the whole row behave like a large click target, not just the radio button.
         optionRow.setOnMouseClicked(event -> carRadioButton.setSelected(true));
         optionRows[carIndex] = optionRow;
         return optionRow;
@@ -184,10 +192,20 @@ public class IntroView {
                 + "-fx-background-radius: 8;";
     }
 
+    /**
+     * Returns the root node for this scene.
+     *
+     * @return the intro view root
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * Returns the selected car index, or -1 when no car is selected.
+     *
+     * @return the selected car index or -1
+     */
     public int getSelectedCarIndex() {
         Toggle selectedToggle = carSelectionGroup.getSelectedToggle();
 
@@ -198,6 +216,9 @@ public class IntroView {
         return (int) selectedToggle.getUserData();
     }
 
+    /**
+     * Clears the current predicted winner selection.
+     */
     public void clearSelection() {
         carSelectionGroup.selectToggle(null);
         updateSelectionStatus();
@@ -205,6 +226,11 @@ public class IntroView {
         startRaceButton.setDisable(true);
     }
 
+    /**
+     * Selects a car option by index.
+     *
+     * @param selectedCarIndex the car index to select
+     */
     public void setSelectedCarIndex(int selectedCarIndex) {
         for (Toggle toggle : carSelectionGroup.getToggles()) {
             if ((int) toggle.getUserData() == selectedCarIndex) {

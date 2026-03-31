@@ -1,11 +1,5 @@
 package org.cs225.GUI;
 
-/*
-    Gabriel worked on this class
-
-    This class is 
- */
-
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -30,6 +24,12 @@ import org.cs225.RaceGameApp;
 import org.cs225.RaceManager;
 import org.cs225.Track.Stop;
 
+/**
+ * Displays the race track, car sprites, and live race status during the
+ * JavaFX animation loop.
+ *
+ * @author Gabriel Ferreira
+ */
 public class RaceView {
 
     private static final boolean DEBUG_TRACK_GEOMETRY = false; // switch to true to enable helpful debugging tools
@@ -101,6 +101,11 @@ public class RaceView {
     private int progressCarIndex;
     private int predictedRouteCarIndex;
 
+    /**
+     * Creates the race view and its track display.
+     *
+     * @param app the main JavaFX application
+     */
     public RaceView(RaceGameApp app) {
         root = new BorderPane();
         trackContainer = new StackPane();
@@ -151,7 +156,7 @@ public class RaceView {
         trackContainer.getChildren().add(trackPane);
 
         Label noteLabel = new Label(
-                "TODO: Replace this ordered placeholder loop with teammate Stop, Track, and Route data."
+                "Track order: A -> m1 -> B -> m2 -> C -> m3 -> D -> m4."
         );
         noteLabel.setWrapText(true);
         noteLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #666666;");
@@ -173,7 +178,6 @@ public class RaceView {
 
         Button finishRaceButton = new Button("Finish Placeholder Race");
         finishRaceButton.setOnAction(event -> {
-            // TODO: When real simulation timing is ready, let the controller decide when the race ends.
             app.showResults();
         });
 
@@ -206,6 +210,7 @@ public class RaceView {
         centerLine.getStrokeDashArray().addAll(12.0, 10.0);
         centerLine.setFill(null);
 
+        // This overlay is turned on to show the predicted car's remaining route.
         routeOverlay.setStroke(Color.GOLDENROD);
         routeOverlay.setStrokeWidth(5);
         routeOverlay.getStrokeDashArray().addAll(10.0, 8.0);
@@ -268,6 +273,11 @@ public class RaceView {
         return carMarker;
     }
 
+    /**
+     * Returns the root node for this scene.
+     *
+     * @return the race view root
+     */
     public Parent getRoot() {
         return root;
     }
@@ -288,6 +298,11 @@ public class RaceView {
         predictedRouteCarIndex = carIndex;
     }
 
+    /**
+     * Connects the view to the current race manager.
+     *
+     * @param manager the active race manager
+     */
     public void setRaceManager(RaceManager manager) {
         raceManager = manager;
 
@@ -297,6 +312,9 @@ public class RaceView {
         }
     }
 
+    /**
+     * Updates the visible race state from the current race manager data.
+     */
     public void renderFromRaceManager() {
         if (raceManager == null) {
             return;
@@ -319,6 +337,7 @@ public class RaceView {
         validateCarIndex(carIndex);
 
         StackPane carMarker = carMarkers[carIndex];
+        // StackPane uses its top-left corner for layout, so shift from car center to top-left.
         carMarker.setLayoutX(centerX - (carMarker.getPrefWidth() / 2.0));
         carMarker.setLayoutY(centerY - (carMarker.getPrefHeight() / 2.0));
     }
@@ -343,6 +362,9 @@ public class RaceView {
         routeOverlay.setVisible(false);
     }
 
+    /**
+     * Resets visible race UI state before a new race begins.
+     */
     public void resetForNewRace() {
         setRaceStatus("Placeholder race in progress.");
         predictionLabel.setText("Predicted winner: none selected.");
@@ -621,6 +643,7 @@ public class RaceView {
             return;
         }
 
+        // Start at the car's live position, then draw through the rest of its route stops.
         routeOverlay.getPoints().addAll(predictedCar.getXPos(), predictedCar.getYPos());
 
         for (int i = nextStopIndex; i < routeStops.size(); i++) {
@@ -639,6 +662,7 @@ public class RaceView {
 
         int activeProgressCarIndex = progressCarIndex;
         if (activeProgressCarIndex < 0 || activeProgressCarIndex >= cars.size()) {
+            // Fall back to the first car if no specific car was chosen for progress tracking.
             activeProgressCarIndex = 0;
         }
 
