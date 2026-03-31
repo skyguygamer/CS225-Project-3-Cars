@@ -46,6 +46,7 @@ public class RaceGameApp extends Application {
     private static final int TRACK_PANEL_HEIGHT = 500;
     private static final int TRACK_STOP_COUNT = 8;
     private static final int CAR_COUNT = 4;
+    private static final double SECONDS_PER_SIMULATION_TICK = 0.016;
     private static final String[] CAR_NAMES = {"Car 1", "Car 2", "Car 3", "Car 4"};
 
     private Stage primaryStage;
@@ -300,8 +301,15 @@ public class RaceGameApp extends Application {
             return "-";
         }
 
-        // TODO: Replace generic numeric formatting once teammate speed units are finalized.
-        double averageSpeed = car.getDistance() / car.getFinishTime();
+        // Car distance is accumulated once per simulation tick, so convert the
+        // recorded finish time back into a tick count before averaging. This
+        // keeps the end-of-race average speed in the same unit as Car speed/top speed.
+        double completedTickCount = car.getFinishTime() / SECONDS_PER_SIMULATION_TICK;
+        if (completedTickCount <= 0) {
+            return "-";
+        }
+
+        double averageSpeed = car.getDistance() / completedTickCount;
         return String.format("%.2f", averageSpeed);
     }
 

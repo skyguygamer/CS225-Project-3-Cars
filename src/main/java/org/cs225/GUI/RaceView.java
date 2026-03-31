@@ -33,7 +33,7 @@ import org.cs225.Track.Stop;
 public class RaceView {
 
     private static final boolean DEBUG_TRACK_GEOMETRY = false; // switch to true to enable helpful debugging tools
-    private static final boolean DEBUG_RACE_HUD = false;
+    private static final boolean DEBUG_RACE_HUD = true;
 
     private static final Point2D[] PLACEHOLDER_TRACK_POINTS = {
             // Main checkpoint A
