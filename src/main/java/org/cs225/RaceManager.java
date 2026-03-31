@@ -27,7 +27,7 @@ public class RaceManager {
         clock.reset();
 
         //creates the whole track
-        track.generateStops();
+        //track.generateStops();
         track.generateLegs();
 
         //picks a finishing stop
