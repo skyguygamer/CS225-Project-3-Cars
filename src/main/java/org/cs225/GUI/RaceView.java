@@ -57,7 +57,7 @@ public class RaceView {
     private static final int[] MAIN_CHECKPOINT_INDICES = {0, 2, 4, 6};
     private static final String[] MAIN_CHECKPOINT_LABELS = {"A", "B", "C", "D"};
     private static final Point2D[] MAIN_CHECKPOINT_LABEL_OFFSETS = {
-            new Point2D(-6, -18),
+            new Point2D(-6, -30),
             new Point2D(18, -6),
             new Point2D(-6, 20),
             new Point2D(-30, -6)
@@ -98,6 +98,8 @@ public class RaceView {
     private final Label[] carDebugLabels;
     private final Polyline routeOverlay;
     private RaceManager raceManager;
+    private int progressCarIndex;
+    private int predictedRouteCarIndex;
 
     public RaceView(RaceGameApp app) {
         root = new BorderPane();
@@ -112,6 +114,8 @@ public class RaceView {
         targetMarkers = new Circle[MAIN_CHECKPOINT_INDICES.length];
         carDebugLabels = new Label[MAIN_CHECKPOINT_INDICES.length];
         routeOverlay = new Polyline();
+        progressCarIndex = -1;
+        predictedRouteCarIndex = -1;
 
         buildLayout(app);
         drawPlaceholderTrack();
@@ -276,11 +280,20 @@ public class RaceView {
         predictionLabel.setText("Predicted winner: " + carName);
     }
 
+    public void setProgressCarIndex(int carIndex) {
+        progressCarIndex = carIndex;
+    }
+
+    public void setPredictedRouteCarIndex(int carIndex) {
+        predictedRouteCarIndex = carIndex;
+    }
+
     public void setRaceManager(RaceManager manager) {
         raceManager = manager;
 
         if (manager == null) {
             resetDebugHud();
+            clearPredictedRoute();
         }
     }
 
@@ -297,6 +310,8 @@ public class RaceView {
             updateCarPosition(i, car.getXPos(), car.getYPos());
         }
 
+        updatePredictedRouteOverlay(cars);
+        updateRaceProgressLabel(cars);
         updateDebugHud(cars);
     }
 
@@ -332,6 +347,8 @@ public class RaceView {
         setRaceStatus("Placeholder race in progress.");
         predictionLabel.setText("Predicted winner: none selected.");
         clearPredictedRoute();
+        progressCarIndex = -1;
+        predictedRouteCarIndex = -1;
 
         for (int i = 0; i < MAIN_CHECKPOINT_INDICES.length; i++) {
             Point2D startingPoint = PLACEHOLDER_TRACK_POINTS[MAIN_CHECKPOINT_INDICES[i]];
@@ -585,6 +602,65 @@ public class RaceView {
         targetMarker.setCenterX(targetStop.getxPos());
         targetMarker.setCenterY(targetStop.getyPos());
         targetMarker.setVisible(true);
+    }
+
+    private void updatePredictedRouteOverlay(List<Car> cars) {
+        if (predictedRouteCarIndex < 0 || predictedRouteCarIndex >= cars.size()) {
+            clearPredictedRoute();
+            return;
+        }
+
+        Car predictedCar = cars.get(predictedRouteCarIndex);
+        List<Stop> routeStops = predictedCar.getPathway();
+        int nextStopIndex = predictedCar.getCurrentStopIndex() + 1;
+
+        routeOverlay.getPoints().clear();
+
+        if (predictedCar.isFinished() || nextStopIndex >= routeStops.size()) {
+            routeOverlay.setVisible(false);
+            return;
+        }
+
+        routeOverlay.getPoints().addAll(predictedCar.getXPos(), predictedCar.getYPos());
+
+        for (int i = nextStopIndex; i < routeStops.size(); i++) {
+            Stop stop = routeStops.get(i);
+            routeOverlay.getPoints().addAll(stop.getxPos(), stop.getyPos());
+        }
+
+        routeOverlay.setVisible(true);
+    }
+
+    private void updateRaceProgressLabel(List<Car> cars) {
+        if (cars.isEmpty()) {
+            setRaceStatus("Race progress unavailable.");
+            return;
+        }
+
+        int activeProgressCarIndex = progressCarIndex;
+        if (activeProgressCarIndex < 0 || activeProgressCarIndex >= cars.size()) {
+            activeProgressCarIndex = 0;
+        }
+
+        Car trackedCar = cars.get(activeProgressCarIndex);
+        Stop currentStop = trackedCar.getCurrentStop();
+        Stop targetStop = trackedCar.getCurrentTargetStop();
+
+        if (trackedCar.isFinished()) {
+            setRaceStatus(
+                    "Progress: finished at " + formatStopName(currentStop)
+            );
+            return;
+        }
+
+        int currentLegNumber = trackedCar.getCurrentLegIndex() + 1;
+        int totalLegCount = trackedCar.getTotalLegCount();
+
+        setRaceStatus(
+                "Progress: " + formatStopName(currentStop)
+                        + " -> " + formatStopName(targetStop)
+                        + " (" + currentLegNumber + "/" + totalLegCount + ")"
+        );
     }
 
     private String buildCarDebugText(int carIndex, Car car) {

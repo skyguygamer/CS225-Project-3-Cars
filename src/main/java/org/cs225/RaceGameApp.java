@@ -125,8 +125,9 @@ public class RaceGameApp extends Application {
 
         raceView.resetForNewRace();
         raceView.setRaceManager(gameRace);
+        raceView.setProgressCarIndex(selectedCarIndex);
+        raceView.setPredictedRouteCarIndex(selectedCarIndex);
         raceView.setPredictedCarName(CAR_NAMES[selectedCarIndex]);
-        raceView.setRaceStatus("Race in progress for " + CAR_NAMES[selectedCarIndex] + ".");
         raceView.renderFromRaceManager();
         resultsView.clearResults();
 
