@@ -30,25 +30,17 @@ public class RaceManager {
         //track.generateStops();
         track.generateLegs();
 
-        //picks a finishing stop
-        Stop finishStop = track.getStops().get(0);
+        ArrayList<Route> routeTemplates = createFixedRouteTemplates(track);
 
-        //this gets the fair starting positions
-        ArrayList<Stop> startingStops =
-                track.getFairStartingStops(finishStop, numCars);
-
-        // TODO: Remove this fallback once teammate track generation always provides 4 fair starts.
-        if (startingStops.size() < numCars) {
-            startingStops = getFallbackStartingStops(track.getStops(), finishStop, numCars);
+        if (routeTemplates.isEmpty()) {
+            return;
         }
 
-        //builds the routes to each car
-        for (int i = 0; i < startingStops.size(); i++) {
-            Stop start = startingStops.get(i);
-            Route route = track.buildRoute(start, finishStop);
-            if (route == null){
-                continue;
-            }
+        Collections.shuffle(routeTemplates);
+
+        // Each car gets one of the four hardcoded route templates in random order.
+        for (int i = 0; i < numCars && i < routeTemplates.size(); i++) {
+            Route route = routeTemplates.get(i);
 
             Car car = new Car(route.getStops(), route.getLegs(), "Car" + (i + 1), "car" + (i + 1) + ".png");
             cars.add(car);
@@ -169,21 +161,57 @@ public class RaceManager {
         return clock.getTime();
     }
 
-    private ArrayList<Stop> getFallbackStartingStops(ArrayList<Stop> allStops, Stop finishStop, int numCars) {
-        ArrayList<Stop> fallbackStops = new ArrayList<>();
+    private ArrayList<Route> createFixedRouteTemplates(Track track) {
+        ArrayList<Route> routeTemplates = new ArrayList<>();
 
-        for (Stop stop : allStops) {
-            if (stop == finishStop) {
-                continue;
-            }
-
-            fallbackStops.add(stop);
-
-            if (fallbackStops.size() == numCars) {
-                break;
-            }
+        if (track.getStops().size() < 8) {
+            return routeTemplates;
         }
 
-        return fallbackStops;
+        // Hardcoded main-checkpoint routes over the fixed loop:
+        // D -> A -> B -> C
+        addRouteIfValid(routeTemplates, buildFixedRoute(track, 6, 7, 0, 1, 2, 3, 4));
+        // A -> B -> C -> D
+        addRouteIfValid(routeTemplates, buildFixedRoute(track, 0, 1, 2, 3, 4, 5, 6));
+        // B -> C -> D -> A
+        addRouteIfValid(routeTemplates, buildFixedRoute(track, 2, 3, 4, 5, 6, 7, 0));
+        // C -> D -> A -> B
+        addRouteIfValid(routeTemplates, buildFixedRoute(track, 4, 5, 6, 7, 0, 1, 2));
+
+        return routeTemplates;
+    }
+
+    private Route buildFixedRoute(Track track, int... stopIndices) {
+        ArrayList<Stop> routeStops = new ArrayList<>();
+        ArrayList<Leg> routeLegs = new ArrayList<>();
+        ArrayList<Stop> trackStops = track.getStops();
+
+        for (int stopIndex : stopIndices) {
+            if (stopIndex < 0 || stopIndex >= trackStops.size()) {
+                return null;
+            }
+
+            routeStops.add(trackStops.get(stopIndex));
+        }
+
+        for (int i = 0; i < routeStops.size() - 1; i++) {
+            Stop currentStop = routeStops.get(i);
+            Stop nextStop = routeStops.get(i + 1);
+            Leg leg = track.getLeg(currentStop, nextStop);
+
+            if (leg == null) {
+                return null;
+            }
+
+            routeLegs.add(leg);
+        }
+
+        return new Route(routeStops, routeLegs);
+    }
+
+    private void addRouteIfValid(ArrayList<Route> routeTemplates, Route route) {
+        if (route != null) {
+            routeTemplates.add(route);
+        }
     }
 }

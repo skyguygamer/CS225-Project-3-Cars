@@ -64,13 +64,16 @@ public class Track {
     public Track(int screenWidth, int screenHeight, Point2D[]track_points) {
         legs = new ArrayList<Leg>();
         stops = new ArrayList<Stop>();
+        this.width = screenWidth;
+        this.height = screenHeight;
+        this.numStops = track_points.length;
+        this.randomizer = new Random();
 
         for( int i = 0; i < track_points.length; i++)
         {
             double x = track_points[i].getX();
             double y = track_points[i].getY();
-            String name = String.valueOf('A'+i);
-            System.out.print(i);
+            String name = getPredefinedStopName(i);
             stops.add(new Stop(x,y,name));
         }
     }
@@ -429,4 +432,12 @@ public class Track {
  */
 
     //FInd route for starting and ending stop
+
+    private String getPredefinedStopName(int stopIndex) {
+        if (stopIndex % 2 == 0) {
+            return String.valueOf((char) ('A' + (stopIndex / 2)));
+        }
+
+        return "m" + ((stopIndex / 2) + 1);
+    }
 }

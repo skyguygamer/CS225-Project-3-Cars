@@ -32,8 +32,8 @@ import org.cs225.Track.Stop;
 
 public class RaceView {
 
-    private static final boolean DEBUG_TRACK_GEOMETRY = true; // switch to true to enable helpful debugging tools
-    private static final boolean DEBUG_RACE_HUD = true;
+    private static final boolean DEBUG_TRACK_GEOMETRY = false; // switch to true to enable helpful debugging tools
+    private static final boolean DEBUG_RACE_HUD = false;
 
     private static final Point2D[] PLACEHOLDER_TRACK_POINTS = {
             // Main checkpoint A
@@ -42,20 +42,20 @@ public class RaceView {
             new Point2D(637, 219),
             // Main checkpoint B
             new Point2D(880, 250),
-            // Mini-point between B and D
+            // Mini-point between B and C
             new Point2D(723, 439),
-            // Main checkpoint D
-            new Point2D(480, 470),
-            // Mini-point between D and C
-            new Point2D(323, 281),
             // Main checkpoint C
+            new Point2D(480, 470),
+            // Mini-point between C and D
+            new Point2D(323, 281),
+            // Main checkpoint D
             new Point2D(80, 250),
-            // Mini-point between C and A
+            // Mini-point between D and A
             new Point2D(237, 61)
     };
 
     private static final int[] MAIN_CHECKPOINT_INDICES = {0, 2, 4, 6};
-    private static final String[] MAIN_CHECKPOINT_LABELS = {"A", "B", "D", "C"};
+    private static final String[] MAIN_CHECKPOINT_LABELS = {"A", "B", "C", "D"};
     private static final Point2D[] MAIN_CHECKPOINT_LABEL_OFFSETS = {
             new Point2D(-6, -18),
             new Point2D(18, -6),
