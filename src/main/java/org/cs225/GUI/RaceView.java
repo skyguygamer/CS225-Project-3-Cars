@@ -23,7 +23,7 @@ import org.cs225.RaceGameApp;
 
 public class RaceView {
 
-    private static final boolean DEBUG_TRACK_GEOMETRY = false;
+    private static final boolean DEBUG_TRACK_GEOMETRY = true;
 
     private static final Point2D[] PLACEHOLDER_TRACK_POINTS = {
             // Main checkpoint A

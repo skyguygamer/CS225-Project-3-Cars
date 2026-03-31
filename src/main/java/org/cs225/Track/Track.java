@@ -10,6 +10,8 @@ package org.cs225.Track;
 
 import java.util.*;
 
+import javafx.geometry.Point2D;
+
 public class Track {
     private ArrayList<Leg> legs;
     private ArrayList<Stop> stops;
@@ -40,6 +42,7 @@ public class Track {
 
         this.randomizer = new Random();
     }
+    
 
 
     //Constructor with seed
@@ -50,6 +53,19 @@ public class Track {
         this.randomSeed = randomSeed;
     }
 
+    public Track(int screenWidth, int screenHeight, Point2D[]track_points) {
+        legs = new ArrayList<Leg>();
+        stops = new ArrayList<Stop>();
+
+        for( int i = 0; i < track_points.length; i++)
+        {
+            double x = track_points[i].getX();
+            double y = track_points[i].getY();
+            String name = String.valueOf('A'+i);
+            System.out.print(i);
+            stops.add(new Stop(x,y,name));
+        }
+    }
 
     //Generates random stops within bounds
     public void generateStops() {

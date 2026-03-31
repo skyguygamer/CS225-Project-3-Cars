@@ -1,5 +1,12 @@
+/**
+ * @author Gabriel
+ * @author Matthew
+ */
+
 package org.cs225;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +24,25 @@ public class RaceGameApp extends Application {
     public static final int INTRO_SCENE = 0;
     public static final int RACE_SCENE = 1;
     public static final int RESULTS_SCENE = 2;
+
+    private static final Point2D[] TRACK_POINTS = {
+            // Main checkpoint A
+            new Point2D(480, 30),
+            // Mini-point between A and B
+            new Point2D(637, 219),
+            // Main checkpoint B
+            new Point2D(880, 250),
+            // Mini-point between B and C
+            new Point2D(723, 439),
+            // Main checkpoint C
+            new Point2D(480, 470),
+            // Mini-point between C and D
+            new Point2D(323, 281),
+            // Main checkpoint D
+            new Point2D(80, 250),
+            // Mini-point between D and A
+            new Point2D(237, 61)
+    };
 
     private static final double WINDOW_WIDTH = 1000;
     private static final double WINDOW_HEIGHT = 700;
@@ -97,7 +123,13 @@ public class RaceGameApp extends Application {
         predictedCarIndex = selectedCarIndex;
 
         gameRace = new RaceManager();
-        gameRace.setupRace(new Track((int)Math.round(WINDOW_WIDTH), (int)Math.round(WINDOW_HEIGHT), 8), 4);
+        gameRace.setupRace(new Track(TRACK_PANEL_WIDTH, TRACK_PANEL_HEIGHT, TRACK_POINTS), CAR_COUNT);
+
+        if (selectedCarIndex >= 0 && selectedCarIndex < gameRace.getCars().size()) {
+            gameRace.setUserPrediction(gameRace.getCars().get(selectedCarIndex).getCarName());
+        }
+
+        gameRace.startRace();
 
         raceView.resetForNewRace();
         raceView.setPredictedCarName(CAR_NAMES[selectedCarIndex]);

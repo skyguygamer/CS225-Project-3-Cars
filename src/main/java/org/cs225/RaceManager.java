@@ -20,7 +20,7 @@ public class RaceManager {
     public void setupRace(Track track, int numCars) {
 
         //creates the whole track
-        track.generateStops();
+        //track.generateStops();
         track.generateLegs();
 
         //picks a finishing stop
