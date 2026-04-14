@@ -10,6 +10,8 @@ package org.cs225;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -23,6 +25,10 @@ public class RaceGameApp extends Application {
     public static final int INTRO_SCENE = 0;
     public static final int RACE_SCENE = 1;
     public static final int RESULTS_SCENE = 2;
+
+    public static final int TICKS_PER_SECOND = 100;
+    private final long TICK_LENGTH = TimeUnit.SECONDS.toNanos(1L) / TICKS_PER_SECOND;
+    private long startTime = System.nanoTime();
 
     private static final Point2D[] TRACK_POINTS = {
             // Main checkpoint A
@@ -114,8 +120,13 @@ public class RaceGameApp extends Application {
             @Override
             public void handle(long now) {
                 // Each animation pulse advances the race once, then redraws the scene.
-                update();
-                render();
+                long currentTime = System.nanoTime();
+                if( TICK_LENGTH <= currentTime - startTime)
+                {
+                    update();
+                    render();
+                    startTime = currentTime;
+                };
 
                 if (gameRace != null && gameRace.isRaceFinished()) {
                     raceView.setRaceStatus("Race finished.");
@@ -337,7 +348,7 @@ public class RaceGameApp extends Application {
         }
 
         // TODO: Replace generic numeric formatting once teammate speed units are finalized.
-        double averageSpeed = car.getDistance() / car.getFinishTime();
+        double averageSpeed = (car.getDistance() / car.getFinishTime()) /TICKS_PER_SECOND;
         return String.format("%.2f", averageSpeed);
     }
 
