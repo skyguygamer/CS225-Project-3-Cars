@@ -26,7 +26,7 @@ public class RaceGameApp extends Application {
     public static final int RACE_SCENE = 1;
     public static final int RESULTS_SCENE = 2;
 
-    public static final int TICKS_PER_SECOND = 100;
+    public static final int TICKS_PER_SECOND = 60;
     private final long TICK_LENGTH = TimeUnit.SECONDS.toNanos(1L) / TICKS_PER_SECOND;
     private long startTime = System.nanoTime();
 
@@ -348,13 +348,15 @@ public class RaceGameApp extends Application {
         }
 
         // TODO: Replace generic numeric formatting once teammate speed units are finalized.
-        double averageSpeed = (car.getDistance() / car.getFinishTime()) /TICKS_PER_SECOND;
+        //double averageSpeed = (car.getDistance() / car.getFinishTime()) * TICKS_PER_SECOND;
+        double averageSpeed = (car.getDistance() / car.getFinishTime());
         return String.format("%.2f", averageSpeed);
     }
 
     private String formatTopSpeed(Car car) {
         // TODO: Replace generic numeric formatting once teammate speed units are finalized.
-        return String.format("%.2f", car.getTopSpeed());
+        //return String.format("%.2f", car.getTopSpeed());
+        return String.format("%.2f", car.getTopSpeed()*TICKS_PER_SECOND);
     }
 
     private String formatCarDisplayName(String carName) {
